@@ -813,6 +813,16 @@
   let rafId = null;
   let lastFrameTime = null;
   let currentYearsAgo = EARTH_AGE;
+  let lastPlaybackDay = null;
+
+  // 再生中、針がその日に到達したタイミングで詳細パネルをホバー時と同じ内容に切り替える
+  function updatePanelDuringPlayback(yearsAgo){
+    const dayOfYear = computeDate(yearsAgo).dayOfYear;
+    if(dayOfYear === lastPlaybackDay) return;
+    lastPlaybackDay = dayOfYear;
+    const group = groupsByDay.get(dayOfYear);
+    if(group) renderPanel(group);
+  }
 
   function stopPlayback(label){
     playing = false;
@@ -836,11 +846,13 @@
     if(currentYearsAgo <= 0){
       currentYearsAgo = 0;
       setYears(0);
+      updatePanelDuringPlayback(0);
       stopPlayback('↻ もう一度再生');
       return;
     }
 
     setYears(currentYearsAgo);
+    updatePanelDuringPlayback(currentYearsAgo);
     rafId = requestAnimationFrame(playbackStep);
   }
 
@@ -854,6 +866,7 @@
     currentYearsAgo = (parsed === null || parsed <= 0) ? EARTH_AGE : parsed;
     playing = true;
     lastFrameTime = null;
+    lastPlaybackDay = null;
     playBtn.textContent = '⏸ 一時停止';
     playBtn.setAttribute('aria-pressed', 'true');
     rafId = requestAnimationFrame(playbackStep);
