@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>地球カレンダー — 46億年を1年に</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0F1E;
+    --bg-panel: #101832;
+    --ink: #EDEAE3;
+    --ink-dim: #8D93AC;
+    --ink-faint: #545C77;
+    --amber: #E8A33D;
+    --amber-soft: rgba(232,163,61,0.16);
+    --teal: #49B3A6;
+    --line: rgba(237,234,227,0.12);
+    --line-strong: rgba(237,234,227,0.22);
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{
+    scroll-behavior: smooth;
+    background: var(--bg);
+    color-scheme: dark;
+  }
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(232,163,61,0.08), transparent),
+      radial-gradient(ellipse 60% 40% at 90% 20%, rgba(73,179,166,0.06), transparent),
+      var(--bg);
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .page{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem 5rem;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{ text-align: center; margin-bottom: 3rem; }
+
+  .kicker{
+    font-size: 0.9rem;
+    color: var(--amber);
+    letter-spacing: 0.02em;
+    margin: 0 0 0.75rem;
+  }
+
+  h1{
+    font-family: 'Fraunces', serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-size: clamp(2rem, 6vw, 3rem);
+    margin: 0 0 1rem;
+    line-height: 1.25;
+  }
+
+  .lede{
+    color: var(--ink-dim);
+    font-size: 1.05rem;
+    line-height: 1.75;
+    max-width: 34em;
+    margin: 0 auto;
+  }
+
+  /* ---------- Wheel ---------- */
+  .wheel-section{
+    display: flex;
+    justify-content: center;
+    margin: 3rem 0 1rem;
+  }
+
+  .wheel-wrap{
+    position: relative;
+    width: min(420px, 88vw);
+  }
+
+  #wheel{ width: 100%; height: auto; display:block; }
+
+  .wheel-readout{
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 62%;
+    pointer-events: none;
+  }
+
+  .readout-caption{
+    display:block;
+    font-size: 0.78rem;
+    color: var(--ink-dim);
+    margin-bottom: 0.35rem;
+    line-height: 1.5;
+  }
+
+  .readout-date{
+    display:block;
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(1.5rem, 6vw, 2.05rem);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .readout-time{
+    display:block;
+    font-size: 0.95rem;
+    color: var(--amber);
+    font-variant-numeric: tabular-nums;
+    margin-top: 0.15rem;
+  }
+
+  .wheel-note{
+    text-align:center;
+    color: var(--ink-faint);
+    font-size: 0.85rem;
+    line-height: 1.7;
+    max-width: 30em;
+    margin: 1.75rem auto 0;
+  }
+
+  /* ---------- 再生コントロール ---------- */
+  .playback-controls{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-wrap: wrap;
+    gap:0.75rem;
+    margin: 1.5rem auto 0;
+  }
+
+  #playBtn{
+    background: var(--amber);
+    color:#1A1305;
+    border:none;
+    border-radius: 8px;
+    font-family:'Work Sans', sans-serif;
+    font-size:0.95rem;
+    font-weight:600;
+    padding:0.6rem 1.2rem;
+    cursor:pointer;
+    min-width: 8.5em;
+    transition: filter 0.15s ease;
+  }
+  #playBtn:hover{ filter: brightness(1.08); }
+  #playBtn:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+
+  .speed-label{
+    color: var(--ink-dim);
+    font-size:0.85rem;
+  }
+
+  #speedSelect{
+    background: rgba(255,255,255,0.03);
+    border:1px solid var(--line-strong);
+    border-radius:8px;
+    color: var(--ink);
+    font-family:'Work Sans', sans-serif;
+    font-size:0.9rem;
+    padding:0.45rem 0.6rem;
+    cursor:pointer;
+  }
+  #speedSelect:focus-visible{ outline:2px solid var(--amber); outline-offset:1px; }
+
+  /* イベントマーカー & ツールチップ */
+  #wheel g.event-marker{ cursor: pointer; }
+  #wheel g.event-marker circle.marker-dot{ transition: filter 0.12s ease; }
+  #wheel g.event-marker:hover circle.marker-dot,
+  #wheel g.event-marker:focus circle.marker-dot{ filter: brightness(1.3); }
+  #wheel g.event-marker:focus{ outline: none; }
+  #wheel g.event-marker:focus circle.marker-dot{ stroke: var(--ink); stroke-width: 1.5; }
+
+  .detail-panel{
+    position: relative;
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 0.4rem 1.3rem;
+    margin: 2rem 0 0;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .panel-placeholder{
+    margin: 0;
+    padding: 1.1rem 0;
+    color: var(--ink-faint);
+    font-size: 0.9rem;
+  }
+
+  .panel-row{
+    position: relative;
+    padding: 0.7rem 0.15rem 0.7rem 1.1rem;
+    border-top: 1px solid var(--line);
+    cursor: pointer;
+    border-radius: 6px;
+  }
+  .panel-row:first-child{ border-top: none; }
+  .panel-row:hover,
+  .panel-row:focus{
+    background: var(--amber-soft);
+    outline: none;
+  }
+  .panel-row.active{
+    background: var(--amber-soft);
+  }
+  .panel-row.active::before{
+    content: '';
+    position: absolute;
+    left: 0.35rem;
+    top: 0.45rem;
+    bottom: 0.45rem;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--amber);
+  }
+
+  .panel-year{
+    display:block;
+    font-size: 0.76rem;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 0.15rem;
+  }
+
+  .panel-label{
+    display:block;
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  /* ---------- Input ---------- */
+  .input-section{
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.75rem 1.75rem 1.5rem;
+    margin: 2.75rem 0;
+  }
+
+  .input-section label{
+    display:block;
+    font-size: 0.95rem;
+    color: var(--ink-dim);
+    margin-bottom: 0.9rem;
+  }
+
+  .input-row{
+    display:flex;
+    align-items:center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  #yearsInput{
+    flex: 1 1 200px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 1.1rem;
+    font-variant-numeric: tabular-nums;
+    padding: 0.65rem 0.85rem;
+    min-width: 0;
+  }
+
+  #yearsInput:focus-visible{
+    outline: 2px solid var(--amber);
+    outline-offset: 1px;
+  }
+
+  .unit{ color: var(--ink-dim); font-size: 0.95rem; }
+
+  #convertBtn{
+    background: var(--amber);
+    color: #1A1305;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.68rem 1.3rem;
+    cursor: pointer;
+    transition: filter 0.15s ease;
+  }
+  #convertBtn:hover{ filter: brightness(1.08); }
+  #convertBtn:focus-visible{ outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  #yearsSlider{
+    width: 100%;
+    margin-top: 1.35rem;
+    accent-color: var(--amber);
+  }
+
+  .slider-labels{
+    display:flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+    margin-top: 0.4rem;
+  }
+
+  /* ---------- Events ---------- */
+  .events-section h2{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.4rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .event-group{ margin-bottom: 2rem; }
+
+  .event-group h3{
+    font-size: 0.85rem;
+    color: var(--ink-dim);
+    font-weight: 500;
+    margin: 0 0 0.75rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .event-list{
+    list-style:none;
+    margin:0; padding:0;
+  }
+
+  .event-item{
+    display:flex;
+    align-items: baseline;
+    gap: 1rem;
+    width:100%;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    text-align: left;
+    padding: 0.85rem 0.25rem;
+    cursor: pointer;
+  }
+
+  .event-item:last-child{ border-bottom: none; }
+
+  .event-item:hover .event-label,
+  .event-item:focus-visible .event-label{ color: var(--amber); }
+
+  .event-item:focus-visible{ outline: 2px solid var(--amber); outline-offset: -2px; }
+
+  .event-year{
+    flex: 0 0 auto;
+    width: 6.2em;
+    color: var(--ink-faint);
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .event-label{
+    flex: 1 1 auto;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    transition: color 0.15s ease;
+  }
+
+  /* ---------- Footer ---------- */
+  footer{
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    color: var(--ink-faint);
+    font-size: 0.8rem;
+    line-height: 1.7;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    *{ transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="hero">
+    <p class="kicker">46億年 → 1年</p>
+    <h1>地球カレンダー</h1>
+    <p class="lede">地球が生まれてから今日までの46億年を、まるごと1年に置き換えてみる。何年前のことでも、1年のどこに当たるか分かるよ。</p>
+  </header>
+
+  <section class="wheel-section" aria-hidden="false">
+    <div class="wheel-wrap">
+      <svg id="wheel" viewBox="0 0 480 480" role="img" aria-label="1年に圧縮した地球の歴史カレンダー"></svg>
+      <div class="wheel-readout">
+        <span class="readout-caption" id="readoutCaption">今日 · 0年前</span>
+        <span class="readout-date" id="readoutDate">12月31日</span>
+        <span class="readout-time" id="readoutTime">23:59:59</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="detail-panel" id="detailPanel" role="status" aria-live="polite">
+    <p class="panel-placeholder" id="panelPlaceholder">円周上の点にカーソルを合わせると、ここに出来事が表示されるよ。</p>
+  </div>
+
+  <p class="wheel-note">円周上の点にカーソルを合わせる（スマホはタップ）と、上の暦の表示が切り替わり、下に出来事の説明が出るよ。人類の進化史（約600万年前〜）は、このカレンダーではすべて大晦日の1点に重なっている。</p>
+
+  <div class="playback-controls">
+    <button id="playBtn" type="button" aria-pressed="false">▶ 再生</button>
+    <label class="speed-label" for="speedSelect">速度</label>
+    <select id="speedSelect">
+      <option value="0.5">0.5倍</option>
+      <option value="1" selected>1倍</option>
+      <option value="2">2倍</option>
+      <option value="4">4倍</option>
+    </select>
+  </div>
+
+  <section class="input-section">
+    <label for="yearsInput">何年前を1年に変換する？</label>
+    <div class="input-row">
+      <input type="text" id="yearsInput" inputmode="numeric" placeholder="例: 10000" value="0" />
+      <span class="unit">年前</span>
+      <button id="convertBtn" type="button">変換する</button>
+    </div>
+    <input type="range" id="yearsSlider" min="0" max="1000" step="1" value="0" aria-label="年数（対数目盛り）">
+    <div class="slider-labels"><span>今日</span><span>46億年前</span></div>
+  </section>
+
+  <section class="events-section">
+    <h2>主な出来事から選ぶ</h2>
+    <div class="event-group">
+      <h3>ヒトの登場前</h3>
+      <ul class="event-list" id="beforeHumanList"></ul>
+    </div>
+    <div class="event-group">
+      <h3>ヒトの登場</h3>
+      <ul class="event-list" id="humanList"></ul>
+    </div>
+  </section>
+
+  <footer>
+    46億年 = 地球の年齢として計算。1年の月ごとの日数は現行のグレゴリオ暦（閏年を除く）に合わせている。宇宙そのものの誕生（138億年前）は地球誕生より前の出来事のため、この暦には変換できない。
+  </footer>
+
+</div>
+
+<script>
+(function(){
+
+  // ---------- データ ----------
+  const EARTH_AGE = 4600000000;
+  const MONTH_END_DAY = [31,59,90,120,151,181,212,243,273,304,334,365];
+
+  const beforeHumanEvents = [
+    { id:'x1',  yearsAgo: 13800000000, label: '宇宙誕生（物質とエネルギー、星と銀河が生まれる）', exclude:true },
+    { id:'x2',  yearsAgo: 4600000000,  label: '太陽が生まれ、地球という惑星が形成される' },
+    { id:'x3',  yearsAgo: 4000000000,  label: '海の誕生' },
+    { id:'x4',  yearsAgo: 3800000000,  label: '有機体（生物）が出現する' },
+    { id:'x5',  yearsAgo: 3200000000,  label: '光合成をする生物が出現し、酸素ができる' },
+    { id:'x6',  yearsAgo: 2220000000,  label: '全球凍結（1回目）' },
+    { id:'x7',  yearsAgo: 2100000000,  label: '真核生物の出現' },
+    { id:'x8',  yearsAgo: 2000000000,  label: 'オゾン層の形成' },
+    { id:'x9',  yearsAgo: 1000000000,  label: '多細胞生物の出現' },
+    { id:'x10', yearsAgo: 700000000,   label: '全球凍結（2回目）' },
+    { id:'x11', yearsAgo: 650000000,   label: '全球凍結（3回目）' },
+    { id:'x12', yearsAgo: 540000000,   label: '生物の多様化（カンブリア爆発）' },
+    { id:'x13', yearsAgo: 420000000,   label: '植物の上陸' },
+    { id:'x14', yearsAgo: 400000000,   label: '節足動物の上陸' },
+    { id:'x15', yearsAgo: 360000000,   label: '両生類の上陸' },
+    { id:'x16', yearsAgo: 300000000,   label: 'は虫類の出現' },
+    { id:'x17', yearsAgo: 250000000,   label: '恐竜の出現' },
+    { id:'x18', yearsAgo: 225000000,   label: 'ほ乳類の出現' },
+    { id:'x19', yearsAgo: 150000000,   label: '鳥類の出現' },
+    { id:'x20', yearsAgo: 65500000,    label: '隕石落下、恐竜絶滅、霊長類の出現' },
+  ];
+
+  const humanEvents = [
+    { id:'z1',  yearsAgo: 6000000,  label: 'チンパンジーとの分岐、直立二足歩行の開始' },
+    { id:'z2',  yearsAgo: 2500000,  label: 'アフリカでホモ属が進化。最初の石器' },
+    { id:'z3',  yearsAgo: 2000000,  label: '人類がアフリカからユーラシアへ拡がる' },
+    { id:'z4',  yearsAgo: 500000,   label: 'ネアンデルタール人が進化する' },
+    { id:'z5',  yearsAgo: 300000,   label: '火が日常的に使われるようになる' },
+    { id:'z6',  yearsAgo: 300000,   label: '東アフリカでホモ・サピエンスが進化する' },
+    { id:'z7',  yearsAgo: 70000,    label: '認知革命。虚構の言語が出現する' },
+    { id:'z8',  yearsAgo: 45000,    label: 'ホモ・サピエンスがオーストラリア大陸に住みつく' },
+    { id:'z9',  yearsAgo: 30000,    label: 'ネアンデルタール人が絶滅する' },
+    { id:'z10', yearsAgo: 16000,    label: 'ホモ・サピエンスがアメリカ大陸に住みつく' },
+    { id:'z11', yearsAgo: 12000,    label: '農業革命。植物の栽培化と定住' },
+    { id:'z12', yearsAgo: 5000,     label: '最初の王国、書記体系、貨幣' },
+    { id:'z13', yearsAgo: 4250,     label: '最初の帝国（アッカド帝国）' },
+    { id:'z14', yearsAgo: 2500,     label: '硬貨の発明、ペルシア帝国、インドの仏教' },
+    { id:'z15', yearsAgo: 2000,     label: '漢帝国、ローマ帝国、キリスト教' },
+    { id:'z16', yearsAgo: 1400,     label: 'イスラム教' },
+    { id:'z17', yearsAgo: 500,      label: '科学革命が起こる' },
+    { id:'z18', yearsAgo: 200,      label: '産業革命が起こる' },
+    { id:'z19', yearsAgo: 0,        label: '今日' },
+  ];
+
+  // ---------- 計算 ----------
+  function computeDate(yearsAgo){
+    yearsAgo = Math.max(0, Math.min(EARTH_AGE, yearsAgo));
+    const a = (EARTH_AGE - yearsAgo) * 365 / EARTH_AGE; // 0〜365
+    let dayOfYear = Math.floor(a) + 1;
+    dayOfYear = Math.max(1, Math.min(365, dayOfYear));
+
+    let month = 1, prevEnd = 0;
+    for(let i=0;i<MONTH_END_DAY.length;i++){
+      if(dayOfYear <= MONTH_END_DAY[i]){ month = i+1; prevEnd = i>0 ? MONTH_END_DAY[i-1] : 0; break; }
+    }
+    const day = dayOfYear - prevEnd;
+
+    const frac = a - Math.floor(a);
+    const totalSeconds = frac * 86400;
+    const hour = Math.floor(totalSeconds/3600);
+    const minute = Math.floor((totalSeconds%3600)/60);
+    const second = Math.floor(totalSeconds%60);
+
+    return { dayOfYear, month, day, hour, minute, second, angle: (a/365)*360 };
+  }
+
+  // ---------- 対数スライダー ----------
+  const MAX_LOG = Math.log10(EARTH_AGE);
+  function sliderToYears(s){
+    if(s <= 0) return 0;
+    return Math.pow(10, (s/1000) * MAX_LOG);
+  }
+  function yearsToSlider(y){
+    if(y <= 1) return 0;
+    return Math.round(Math.min(1000, Math.max(0, (Math.log10(y)/MAX_LOG)*1000)));
+  }
+
+  // ---------- SVG ホイール描画 ----------
+  const svg = document.getElementById('wheel');
+  const CX = 240, CY = 240, R = 168;
+  const NS = 'http://www.w3.org/2000/svg';
+
+  function polar(angleDeg, radius){
+    const rad = (angleDeg - 90) * Math.PI / 180;
+    return { x: CX + radius*Math.cos(rad), y: CY + radius*Math.sin(rad) };
+  }
+  function el(tag, attrs){
+    const e = document.createElementNS(NS, tag);
+    for(const k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  const circumference = 2*Math.PI*R;
+
+  // ベースの円
+  svg.appendChild(el('circle', { cx:CX, cy:CY, r:R, fill:'none', stroke:'var(--line-strong)', 'stroke-width':1.5 }));
+
+  // 進捗リング
+  const progressRing = el('circle', {
+    cx:CX, cy:CY, r:R, fill:'none', stroke:'var(--amber)', 'stroke-width':4,
+    'stroke-linecap':'round', 'stroke-dasharray': `0 ${circumference}`,
+    transform:`rotate(-90 ${CX} ${CY})`
+  });
+  svg.appendChild(progressRing);
+
+  // 月の区切りと数字（内側）
+  let prevCum = 0;
+  MONTH_END_DAY.forEach((cum, i) => {
+    const boundaryAngle = (cum/365)*360;
+    const p1 = polar(boundaryAngle, R-5);
+    const p2 = polar(boundaryAngle, R+5);
+    svg.appendChild(el('line', { x1:p1.x, y1:p1.y, x2:p2.x, y2:p2.y, stroke:'var(--line-strong)', 'stroke-width':1.2 }));
+
+    const midAngle = ((prevCum+cum)/2/365)*360;
+    const lp = polar(midAngle, R-26);
+    const t = el('text', { x:lp.x, y:lp.y, fill:'var(--ink-faint)', 'font-size':'11', 'font-family':'Work Sans, sans-serif', 'text-anchor':'middle', 'dominant-baseline':'middle' });
+    t.textContent = `${i+1}月`;
+    svg.appendChild(t);
+    prevCum = cum;
+  });
+
+  // 出来事マーカー（円周上・ホバー / タップで詳細を表示）
+  // 同じ日に重なる出来事は1つの点にまとめる（人類史はほぼ全件が大晦日に重なる）
+  const allPlaceableEvents = [...beforeHumanEvents, ...humanEvents].filter(e => !e.exclude);
+  const groupsByDay = new Map();
+  allPlaceableEvents.forEach(ev => {
+    const d = computeDate(ev.yearsAgo);
+    if(!groupsByDay.has(d.dayOfYear)) groupsByDay.set(d.dayOfYear, { angle: d.angle, items: [] });
+    groupsByDay.get(d.dayOfYear).items.push(ev);
+  });
+
+  const panel = document.getElementById('detailPanel');
+
+  function yearsLabel(y){
+    if(y === 0) return '今日';
+    if(y >= 100000000) return (y/100000000).toFixed(2).replace(/\.?0+$/,'') + '億年前';
+    if(y >= 10000) return Math.round(y/10000).toLocaleString('ja-JP') + '万年前';
+    return y.toLocaleString('ja-JP') + '年前';
+  }
+
+  function renderPanel(group, focusItem){
+    const items = [...group.items].sort((a,b) => b.yearsAgo - a.yearsAgo);
+    const multi = items.length > 1;
+    panel.innerHTML = '';
+    let activeRow = null;
+    items.forEach(it => {
+      const isActive = multi && it === focusItem;
+      const row = document.createElement('div');
+      row.className = 'panel-row' + (isActive ? ' active' : '');
+      row.tabIndex = 0;
+
+      const y = document.createElement('span');
+      y.className = 'panel-year';
+      y.textContent = yearsLabel(it.yearsAgo);
+
+      const l = document.createElement('span');
+      l.className = 'panel-label';
+      l.textContent = it.label;
+
+      row.appendChild(y);
+      row.appendChild(l);
+      // この項目にカーソルを合わせたら、円の中の表示もその出来事に切り替える
+      row.addEventListener('mouseenter', () => render(it.yearsAgo));
+      row.addEventListener('focus', () => render(it.yearsAgo));
+
+      if(isActive) activeRow = row;
+      panel.appendChild(row);
+    });
+    // 選択された項目があればそれを、なければ先頭の項目を円の中に表示する
+    render((focusItem || items[0]).yearsAgo);
+    // 複数件の中から選んだ場合は、その行が見える位置までパネルをスクロールする
+    if(activeRow){
+      const target = activeRow.offsetTop - panel.clientHeight/2 + activeRow.offsetHeight/2;
+      panel.scrollTop = Math.max(0, target);
+    } else {
+      panel.scrollTop = 0;
+    }
+  }
+
+  function renderPanelExcluded(ev){
+    panel.innerHTML = `<p class="panel-placeholder">${ev.label}は、地球が誕生するよりも前の出来事。このカレンダーには対応する位置がないよ。</p>`;
+  }
+
+  groupsByDay.forEach(group => {
+    const hasHuman = group.items.some(it => it.id[0] === 'z');
+    const multi = group.items.length > 1;
+    const p = polar(group.angle, R);
+
+    const g = el('g', {
+      class: 'event-marker',
+      tabindex: '0',
+      role: 'button',
+      'aria-label': group.items.map(it => `${yearsLabel(it.yearsAgo)} ${it.label}`).join('。')
+    });
+    g.appendChild(el('circle', { cx:p.x, cy:p.y, r:11, fill:'transparent' }));
+    g.appendChild(el('circle', {
+      cx:p.x, cy:p.y, r: multi ? 6 : 4,
+      fill: hasHuman ? 'var(--amber)' : 'var(--teal)',
+      class: 'marker-dot'
+    }));
+    svg.appendChild(g);
+
+    g.addEventListener('mouseenter', () => renderPanel(group));
+    g.addEventListener('focus', () => renderPanel(group));
+    g.addEventListener('click', (e) => { e.stopPropagation(); renderPanel(group); });
+  });
+
+  // 現在位置マーカー
+  const markerLine = el('line', { x1:CX, y1:CY, x2:CX, y2:CY, stroke:'var(--amber)', 'stroke-width':2, opacity:0.55 });
+  svg.appendChild(markerLine);
+  const markerDot = el('circle', { cx:CX, cy:CY-R, r:6.5, fill:'var(--amber)' });
+  svg.appendChild(markerDot);
+  const markerGlow = el('circle', { cx:CX, cy:CY-R, r:12, fill:'var(--amber)', opacity:0.25 });
+  svg.insertBefore(markerGlow, markerDot);
+
+  function updateWheel(angleDeg, visible){
+    const p = polar(angleDeg, R);
+    markerLine.setAttribute('x2', p.x);
+    markerLine.setAttribute('y2', p.y);
+    markerDot.setAttribute('cx', p.x);
+    markerDot.setAttribute('cy', p.y);
+    markerGlow.setAttribute('cx', p.x);
+    markerGlow.setAttribute('cy', p.y);
+    markerLine.style.opacity = visible ? 0.55 : 0;
+    markerDot.style.opacity = visible ? 1 : 0;
+    markerGlow.style.opacity = visible ? 0.25 : 0;
+
+    const arcLen = (angleDeg/360) * circumference;
+    progressRing.setAttribute('stroke-dasharray', visible ? `${arcLen} ${circumference-arcLen}` : `0 ${circumference}`);
+  }
+
+  // ---------- 表示更新 ----------
+  const readoutCaption = document.getElementById('readoutCaption');
+  const readoutDate = document.getElementById('readoutDate');
+  const readoutTime = document.getElementById('readoutTime');
+  const yearsInput = document.getElementById('yearsInput');
+  const yearsSlider = document.getElementById('yearsSlider');
+
+  function formatYearsAgo(y){
+    if(y === 0) return '今日';
+    return y.toLocaleString('ja-JP') + '年前';
+  }
+  function pad(n){ return String(n).padStart(2,'0'); }
+
+  function render(yearsAgo){
+    const d = computeDate(yearsAgo);
+    updateWheel(d.angle, true);
+    readoutCaption.textContent = `${formatYearsAgo(Math.round(yearsAgo))} · ${d.dayOfYear}日目`;
+    readoutDate.textContent = `${d.month}月${d.day}日`;
+    readoutTime.textContent = `${pad(d.hour)}:${pad(d.minute)}:${pad(d.second)}`;
+  }
+
+  function renderExcluded(yearsAgo){
+    updateWheel(0, false);
+    readoutCaption.textContent = '換算できません';
+    readoutDate.textContent = `${(yearsAgo/100000000).toFixed(1)}億年前`;
+    readoutTime.textContent = '地球誕生より前の出来事';
+  }
+
+  function setYears(yearsAgo, { fromEvent } = {}){
+    yearsAgo = Math.max(0, Math.min(EARTH_AGE, Math.round(yearsAgo)));
+    yearsInput.value = yearsAgo.toLocaleString('ja-JP');
+    yearsSlider.value = yearsToSlider(yearsAgo);
+    render(yearsAgo);
+  }
+
+  // ---------- イベントリスト描画 ----------
+  function buildList(container, events){
+    events.forEach(ev => {
+      const li = document.createElement('li');
+      const btn = document.createElement('button');
+      btn.className = 'event-item';
+      btn.type = 'button';
+
+      const yearSpan = document.createElement('span');
+      yearSpan.className = 'event-year';
+      yearSpan.textContent = ev.yearsAgo >= 100000000
+        ? (ev.yearsAgo/100000000).toFixed(2).replace(/\.?0+$/,'') + '億年前'
+        : formatYearsAgo(ev.yearsAgo);
+
+      const labelSpan = document.createElement('span');
+      labelSpan.className = 'event-label';
+      labelSpan.textContent = ev.label;
+
+      btn.appendChild(yearSpan);
+      btn.appendChild(labelSpan);
+      btn.addEventListener('click', () => {
+        if(ev.exclude){
+          renderExcluded(ev.yearsAgo);
+          yearsInput.value = ev.yearsAgo.toLocaleString('ja-JP');
+          yearsSlider.value = 1000;
+          renderPanelExcluded(ev);
+        } else {
+          setYears(ev.yearsAgo);
+          const dayOfYear = computeDate(ev.yearsAgo).dayOfYear;
+          const group = groupsByDay.get(dayOfYear);
+          if(group) renderPanel(group, ev);
+        }
+      });
+
+      li.appendChild(btn);
+      container.appendChild(li);
+    });
+  }
+
+  buildList(document.getElementById('beforeHumanList'), beforeHumanEvents);
+  buildList(document.getElementById('humanList'), humanEvents);
+
+  // ---------- 入力欄・スライダーの配線 ----------
+  function parseInput(){
+    const raw = yearsInput.value.replace(/[,，]/g, '').trim();
+    const n = Number(raw);
+    return Number.isFinite(n) && n >= 0 ? n : null;
+  }
+
+  document.getElementById('convertBtn').addEventListener('click', () => {
+    const n = parseInput();
+    if(n !== null) setYears(n);
+  });
+
+  yearsInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){
+      const n = parseInput();
+      if(n !== null) setYears(n);
+    }
+  });
+
+  yearsSlider.addEventListener('input', () => {
+    if(playing) stopPlayback();
+    const y = Math.round(sliderToYears(Number(yearsSlider.value)));
+    yearsInput.value = y.toLocaleString('ja-JP');
+    render(y);
+  });
+
+  yearsInput.addEventListener('input', () => {
+    if(playing) stopPlayback();
+  });
+
+  // ---------- 再生アニメーション ----------
+  // 地球誕生（46億年前）から今日まで、針が一定速度でホイールを一周する
+  const playBtn = document.getElementById('playBtn');
+  const speedSelect = document.getElementById('speedSelect');
+  const FULL_SWEEP_MS = 20000; // 1倍速でひと巡りするのにかける時間
+  let playing = false;
+  let rafId = null;
+  let lastFrameTime = null;
+  let currentYearsAgo = EARTH_AGE;
+
+  function stopPlayback(label){
+    playing = false;
+    if(rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+    lastFrameTime = null;
+    playBtn.textContent = label || '▶ 再生';
+    playBtn.setAttribute('aria-pressed', 'false');
+  }
+
+  function playbackStep(now){
+    if(!playing) return;
+    if(lastFrameTime === null) lastFrameTime = now;
+    const dt = now - lastFrameTime;
+    lastFrameTime = now;
+
+    const speed = Number(speedSelect.value);
+    const yearsPerMs = EARTH_AGE / FULL_SWEEP_MS;
+    currentYearsAgo -= yearsPerMs * dt * speed;
+
+    if(currentYearsAgo <= 0){
+      currentYearsAgo = 0;
+      setYears(0);
+      stopPlayback('↻ もう一度再生');
+      return;
+    }
+
+    setYears(currentYearsAgo);
+    rafId = requestAnimationFrame(playbackStep);
+  }
+
+  playBtn.addEventListener('click', () => {
+    if(playing){
+      stopPlayback();
+      return;
+    }
+    // 今日の位置（再生し終わった状態）にいるときは、最初から再生し直す
+    const parsed = parseInput();
+    currentYearsAgo = (parsed === null || parsed <= 0) ? EARTH_AGE : parsed;
+    playing = true;
+    lastFrameTime = null;
+    playBtn.textContent = '⏸ 一時停止';
+    playBtn.setAttribute('aria-pressed', 'true');
+    rafId = requestAnimationFrame(playbackStep);
+  });
+
+  document.getElementById('convertBtn').addEventListener('click', () => {
+    if(playing) stopPlayback();
+  }, true);
+
+  // 初期表示：今日
+  render(0);
+
+})();
+</script>
+</body>
+</html>
