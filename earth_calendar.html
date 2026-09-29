@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="dark">
 <title>地球カレンダー — 46億年を1年に</title>
+<meta name="description" content="46億年を、1年に。地球の歴史を1年のカレンダーに縮めると、人類の歴史は大晦日の最後の数十分に収まる。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="地球カレンダー — 46億年を1年に">
+<meta property="og:description" content="46億年を、1年に。人類の歴史は、大晦日の最後の数十分の物語だ。">
+<meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -18,6 +23,7 @@
     --amber: #E8A33D;
     --amber-soft: rgba(232,163,61,0.16);
     --teal: #49B3A6;
+    --violet: #A796F2;
     --line: rgba(237,234,227,0.12);
     --line-strong: rgba(237,234,227,0.22);
   }
@@ -37,7 +43,7 @@
       radial-gradient(ellipse 60% 40% at 90% 20%, rgba(73,179,166,0.06), transparent),
       var(--bg);
     color: var(--ink);
-    font-family: 'Work Sans', sans-serif;
+    font-family: 'Work Sans', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
     min-height: 100dvh;
@@ -46,18 +52,33 @@
   .page{
     max-width: 760px;
     margin: 0 auto;
-    padding: 4rem 1.5rem 5rem;
+    padding: 1.5rem 1.5rem 5rem;
   }
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    display:flex;
+    justify-content:flex-end;
+    margin-bottom: 2.25rem;
+  }
+
+  .lang-toggle{
+    background: none;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    color: var(--ink-dim);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 0.38rem 0.95rem;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .lang-toggle:hover{ color: var(--ink); border-color: var(--ink-dim); }
+  .lang-toggle:focus-visible{ outline: 2px solid var(--amber); outline-offset: 2px; }
 
   /* ---------- Hero ---------- */
-  .hero{ text-align: center; margin-bottom: 3rem; }
-
-  .kicker{
-    font-size: 0.9rem;
-    color: var(--amber);
-    letter-spacing: 0.02em;
-    margin: 0 0 0.75rem;
-  }
+  .hero{ text-align: center; margin-bottom: 2.5rem; }
 
   h1{
     font-family: 'Fraunces', serif;
@@ -72,15 +93,68 @@
     color: var(--ink-dim);
     font-size: 1.05rem;
     line-height: 1.75;
-    max-width: 34em;
+    max-width: 30em;
     margin: 0 auto;
+    white-space: pre-line;
+    text-wrap: balance;
   }
+
+  /* ---------- View tabs ---------- */
+  .view-tabs{
+    display:flex;
+    flex-wrap: wrap;
+    justify-content:center;
+    width: max-content;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 3px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+  }
+
+  .view-tab{
+    background: none;
+    border: none;
+    border-radius: 999px;
+    color: var(--ink-dim);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    padding: 0.45rem 1.05rem;
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+  .view-tab:hover{ color: var(--ink); }
+  .view-tab[aria-pressed="true"]{ background: var(--amber-soft); color: var(--amber); }
+  .view-tab:focus-visible{ outline: 2px solid var(--amber); outline-offset: 1px; }
+
+  .scale-note{
+    text-align:center;
+    color: var(--ink-faint);
+    font-size: 0.8rem;
+    line-height: 1.6;
+    margin: 0.75rem 0 0;
+  }
+
+  .legend{
+    display:flex;
+    justify-content:center;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.2rem;
+    margin: 0.45rem 0 0;
+    color: var(--ink-faint);
+    font-size: 0.78rem;
+  }
+  .legend-item{ display:inline-flex; align-items:center; gap: 0.4rem; }
+  .legend-dot{ width: 8px; height: 8px; border-radius: 50%; display:inline-block; }
+  .legend-dot.before{ background: var(--teal); }
+  .legend-dot.human{ background: var(--violet); }
 
   /* ---------- Wheel ---------- */
   .wheel-section{
     display: flex;
     justify-content: center;
-    margin: 3rem 0 1rem;
+    margin: 1.25rem 0 1rem;
   }
 
   .wheel-wrap{
@@ -89,6 +163,7 @@
   }
 
   #wheel{ width: 100%; height: auto; display:block; }
+  #wheel .layer{ transition: opacity 0.25s ease; }
 
   .wheel-readout{
     position: absolute;
@@ -128,11 +203,94 @@
     color: var(--ink-faint);
     font-size: 0.85rem;
     line-height: 1.7;
-    max-width: 30em;
+    max-width: 31em;
     margin: 1.75rem auto 0;
   }
 
-  /* ---------- 再生コントロール ---------- */
+  /* ---------- Event markers ---------- */
+  #wheel g.event-marker{ cursor: pointer; }
+  #wheel g.event-marker circle.marker-dot{ transition: filter 0.12s ease; }
+  #wheel g.event-marker:hover circle.marker-dot,
+  #wheel g.event-marker:focus circle.marker-dot{ filter: brightness(1.3); }
+  #wheel g.event-marker:focus{ outline: none; }
+  #wheel g.event-marker:focus circle.marker-dot{ stroke: var(--ink); stroke-width: 1.5; }
+  #wheel .position-marker{ pointer-events: none; }
+
+  /* ---------- Detail panel ---------- */
+  .detail-panel{
+    position: relative;
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 0.4rem 1.3rem;
+    margin: 2rem 0 0;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .panel-placeholder{
+    margin: 0;
+    padding: 1.1rem 0;
+    color: var(--ink-faint);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .panel-row{
+    position: relative;
+    padding: 0.7rem 0.15rem 0.7rem 1.1rem;
+    border-top: 1px solid var(--line);
+    cursor: pointer;
+    border-radius: 6px;
+  }
+  .panel-row:first-child{ border-top: none; }
+  .panel-row:hover,
+  .panel-row:focus{
+    background: var(--amber-soft);
+    outline: none;
+  }
+  .panel-row.active{ background: var(--amber-soft); }
+  .panel-row.active::before{
+    content: '';
+    position: absolute;
+    left: 0.35rem;
+    top: 0.45rem;
+    bottom: 0.45rem;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--amber);
+  }
+
+  .panel-heading{
+    margin: 0;
+    padding: 0.85rem 0.15rem 0.55rem 1.1rem;
+    color: var(--amber);
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  .panel-heading + .panel-row{ border-top: none; }
+
+  .panel-tag{
+    display:inline-block;
+    margin-left: 0.5rem;
+    color: var(--ink-dim);
+  }
+
+  .panel-year{
+    display:block;
+    font-size: 0.76rem;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 0.15rem;
+  }
+
+  .panel-label{
+    display:block;
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  /* ---------- Playback controls ---------- */
   .playback-controls{
     display:flex;
     align-items:center;
@@ -158,6 +316,23 @@
   #playBtn:hover{ filter: brightness(1.08); }
   #playBtn:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
 
+  .ghost-btn{
+    background: none;
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 500;
+    padding: 0.56rem 1rem;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .ghost-btn:hover{ border-color: var(--ink-dim); background: rgba(255,255,255,0.03); }
+  .ghost-btn:focus-visible{ outline: 2px solid var(--amber); outline-offset: 2px; }
+
+  .speed-group{ display:flex; align-items:center; gap: 0.45rem; }
+
   .speed-label{
     color: var(--ink-dim);
     font-size:0.85rem;
@@ -175,71 +350,26 @@
   }
   #speedSelect:focus-visible{ outline:2px solid var(--amber); outline-offset:1px; }
 
-  /* イベントマーカー & ツールチップ */
-  #wheel g.event-marker{ cursor: pointer; }
-  #wheel g.event-marker circle.marker-dot{ transition: filter 0.12s ease; }
-  #wheel g.event-marker:hover circle.marker-dot,
-  #wheel g.event-marker:focus circle.marker-dot{ filter: brightness(1.3); }
-  #wheel g.event-marker:focus{ outline: none; }
-  #wheel g.event-marker:focus circle.marker-dot{ stroke: var(--ink); stroke-width: 1.5; }
-
-  .detail-panel{
-    position: relative;
-    background: var(--bg-panel);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 0.4rem 1.3rem;
-    margin: 2rem 0 0;
-    max-height: 300px;
-    overflow-y: auto;
+  .copy-status{
+    text-align: center;
+    color: var(--teal);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    min-height: 1.3em;
+    margin: 0.7rem 0 0;
   }
 
-  .panel-placeholder{
-    margin: 0;
-    padding: 1.1rem 0;
-    color: var(--ink-faint);
-    font-size: 0.9rem;
-  }
-
-  .panel-row{
-    position: relative;
-    padding: 0.7rem 0.15rem 0.7rem 1.1rem;
-    border-top: 1px solid var(--line);
-    cursor: pointer;
-    border-radius: 6px;
-  }
-  .panel-row:first-child{ border-top: none; }
-  .panel-row:hover,
-  .panel-row:focus{
-    background: var(--amber-soft);
-    outline: none;
-  }
-  .panel-row.active{
-    background: var(--amber-soft);
-  }
-  .panel-row.active::before{
-    content: '';
-    position: absolute;
-    left: 0.35rem;
-    top: 0.45rem;
-    bottom: 0.45rem;
-    width: 2px;
-    border-radius: 2px;
-    background: var(--amber);
-  }
-
-  .panel-year{
+  .copy-url{
     display:block;
-    font-size: 0.76rem;
-    color: var(--ink-faint);
-    font-variant-numeric: tabular-nums;
-    margin-bottom: 0.15rem;
-  }
-
-  .panel-label{
-    display:block;
-    font-size: 0.92rem;
-    line-height: 1.55;
+    width: 100%;
+    margin-top: 0.45rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.82rem;
+    padding: 0.5rem 0.7rem;
   }
 
   /* ---------- Input ---------- */
@@ -248,7 +378,7 @@
     border: 1px solid var(--line);
     border-radius: 14px;
     padding: 1.75rem 1.75rem 1.5rem;
-    margin: 2.75rem 0;
+    margin: 2.25rem 0 2.75rem;
   }
 
   .input-section label{
@@ -277,11 +407,7 @@
     padding: 0.65rem 0.85rem;
     min-width: 0;
   }
-
-  #yearsInput:focus-visible{
-    outline: 2px solid var(--amber);
-    outline-offset: 1px;
-  }
+  #yearsInput:focus-visible{ outline: 2px solid var(--amber); outline-offset: 1px; }
 
   .unit{ color: var(--ink-dim); font-size: 0.95rem; }
 
@@ -333,10 +459,7 @@
     border-bottom: 1px solid var(--line);
   }
 
-  .event-list{
-    list-style:none;
-    margin:0; padding:0;
-  }
+  .event-list{ list-style:none; margin:0; padding:0; }
 
   .event-item{
     display:flex;
@@ -352,17 +475,14 @@
     padding: 0.85rem 0.25rem;
     cursor: pointer;
   }
-
-  .event-item:last-child{ border-bottom: none; }
-
+  .event-list li:last-child .event-item{ border-bottom: none; }
   .event-item:hover .event-label,
   .event-item:focus-visible .event-label{ color: var(--amber); }
-
   .event-item:focus-visible{ outline: 2px solid var(--amber); outline-offset: -2px; }
 
   .event-year{
     flex: 0 0 auto;
-    width: 6.2em;
+    width: 8.2em;
     color: var(--ink-faint);
     font-size: 0.85rem;
     font-variant-numeric: tabular-nums;
@@ -395,162 +515,384 @@
 
 <div class="page">
 
+  <div class="topbar">
+    <button class="lang-toggle" id="langBtn" type="button" lang="en">English</button>
+  </div>
+
   <header class="hero">
-    <p class="kicker">46億年 → 1年</p>
-    <h1>地球カレンダー</h1>
-    <p class="lede">地球が生まれてから今日までの46億年を、まるごと1年に置き換えてみる。何年前のことでも、1年のどこに当たるか分かるよ。</p>
+    <h1 data-i18n="title">地球カレンダー</h1>
+    <p class="lede" data-i18n="lede">46億年を、1年に。
+人類の歴史は、大晦日の最後の数十分の物語だ。</p>
   </header>
 
-  <section class="wheel-section" aria-hidden="false">
+  <div class="view-tabs" id="viewTabs" role="group" aria-label="円の表示範囲">
+    <button class="view-tab" type="button" data-view="year" aria-pressed="true">1年</button>
+    <button class="view-tab" type="button" data-view="dec31" aria-pressed="false">12月31日</button>
+    <button class="view-tab" type="button" data-view="lastmin" aria-pressed="false">最後の1分</button>
+  </div>
+  <p class="scale-note" id="scaleNote">円の1周 = 46億年</p>
+  <div class="legend">
+    <span class="legend-item"><span class="legend-dot before"></span><span data-i18n="groupBefore">ヒトの登場前</span></span>
+    <span class="legend-item"><span class="legend-dot human"></span><span data-i18n="groupHuman">ヒトの登場</span></span>
+  </div>
+
+  <section class="wheel-section">
     <div class="wheel-wrap">
       <svg id="wheel" viewBox="0 0 480 480" role="img" aria-label="1年に圧縮した地球の歴史カレンダー"></svg>
       <div class="wheel-readout">
-        <span class="readout-caption" id="readoutCaption">今日 · 0年前</span>
-        <span class="readout-date" id="readoutDate">12月31日</span>
-        <span class="readout-time" id="readoutTime">23:59:59</span>
+        <span class="readout-caption" id="readoutCaption"></span>
+        <span class="readout-date" id="readoutDate"></span>
+        <span class="readout-time" id="readoutTime"></span>
       </div>
     </div>
   </section>
 
-  <div class="detail-panel" id="detailPanel" role="status" aria-live="polite">
-    <p class="panel-placeholder" id="panelPlaceholder">円周上の点にカーソルを合わせると、ここに出来事が表示されるよ。</p>
-  </div>
+  <div class="detail-panel" id="detailPanel" role="status" aria-live="polite"></div>
 
-  <p class="wheel-note">円周上の点にカーソルを合わせる（スマホはタップ）と、上の暦の表示が切り替わり、下に出来事の説明が出るよ。人類の進化史（約600万年前〜）は、このカレンダーではすべて大晦日の1点に重なっている。</p>
+  <p class="wheel-note" data-i18n="wheelNote"></p>
 
   <div class="playback-controls">
     <button id="playBtn" type="button" aria-pressed="false">▶ 再生</button>
-    <label class="speed-label" for="speedSelect">速度</label>
-    <select id="speedSelect">
-      <option value="0.5">0.5倍</option>
-      <option value="1" selected>1倍</option>
-      <option value="2">2倍</option>
-      <option value="4">4倍</option>
-    </select>
+    <button id="resetBtn" class="ghost-btn" type="button" data-i18n="reset">リセット</button>
+    <button id="todayBtn" class="ghost-btn" type="button" data-i18n="todayDate">今日の日付</button>
+    <div class="speed-group">
+      <label class="speed-label" for="speedSelect" data-i18n="speed">速度</label>
+      <select id="speedSelect">
+        <option value="0.5">0.5倍</option>
+        <option value="1" selected>1倍</option>
+        <option value="2">2倍</option>
+        <option value="4">4倍</option>
+      </select>
+    </div>
+    <button id="copyBtn" class="ghost-btn" type="button" data-i18n="copyLink">リンクをコピー</button>
   </div>
+  <div class="copy-status" id="copyStatus" aria-live="polite"></div>
 
   <section class="input-section">
-    <label for="yearsInput">何年前を1年に変換する？</label>
+    <label for="yearsInput" data-i18n="inputLabel">何年前を1年に変換する？</label>
     <div class="input-row">
       <input type="text" id="yearsInput" inputmode="numeric" placeholder="例: 10000" value="0" />
-      <span class="unit">年前</span>
-      <button id="convertBtn" type="button">変換する</button>
+      <span class="unit" data-i18n="unit">年前</span>
+      <button id="convertBtn" type="button" data-i18n="convert">変換する</button>
     </div>
     <input type="range" id="yearsSlider" min="0" max="1000" step="1" value="0" aria-label="年数（対数目盛り）">
-    <div class="slider-labels"><span>今日</span><span>46億年前</span></div>
+    <div class="slider-labels"><span data-i18n="sliderToday">今日</span><span data-i18n="sliderMax">46億年前</span></div>
   </section>
 
   <section class="events-section">
-    <h2>主な出来事から選ぶ</h2>
+    <h2 data-i18n="eventsHeading">主な出来事から選ぶ</h2>
     <div class="event-group">
-      <h3>ヒトの登場前</h3>
+      <h3 data-i18n="groupBefore">ヒトの登場前</h3>
       <ul class="event-list" id="beforeHumanList"></ul>
     </div>
     <div class="event-group">
-      <h3>ヒトの登場</h3>
+      <h3 data-i18n="groupHuman">ヒトの登場</h3>
       <ul class="event-list" id="humanList"></ul>
     </div>
   </section>
 
-  <footer>
-    46億年 = 地球の年齢として計算。1年の月ごとの日数は現行のグレゴリオ暦（閏年を除く）に合わせている。宇宙そのものの誕生（138億年前）は地球誕生より前の出来事のため、この暦には変換できない。
-  </footer>
+  <footer data-i18n="footer">主な出来事の年代は『サピエンス全史』と『ビッグヒストリー』等を参考。</footer>
 
 </div>
 
 <script>
 (function(){
 
-  // ---------- データ ----------
+  // ================= データ =================
   const EARTH_AGE = 4600000000;
   const MONTH_END_DAY = [31,59,90,120,151,181,212,243,273,304,334,365];
 
-  const beforeHumanEvents = [
-    { id:'x1',  yearsAgo: 13800000000, label: '宇宙誕生（物質とエネルギー、星と銀河が生まれる）', exclude:true },
-    { id:'x2',  yearsAgo: 4600000000,  label: '太陽が生まれ、地球という惑星が形成される' },
-    { id:'x3',  yearsAgo: 4000000000,  label: '海の誕生' },
-    { id:'x4',  yearsAgo: 3800000000,  label: '有機体（生物）が出現する' },
-    { id:'x5',  yearsAgo: 3200000000,  label: '光合成をする生物が出現し、酸素ができる' },
-    { id:'x6',  yearsAgo: 2220000000,  label: '全球凍結（1回目）' },
-    { id:'x7',  yearsAgo: 2100000000,  label: '真核生物の出現' },
-    { id:'x8',  yearsAgo: 2000000000,  label: 'オゾン層の形成' },
-    { id:'x9',  yearsAgo: 1000000000,  label: '多細胞生物の出現' },
-    { id:'x10', yearsAgo: 700000000,   label: '全球凍結（2回目）' },
-    { id:'x11', yearsAgo: 650000000,   label: '全球凍結（3回目）' },
-    { id:'x12', yearsAgo: 540000000,   label: '生物の多様化（カンブリア爆発）' },
-    { id:'x13', yearsAgo: 420000000,   label: '植物の上陸' },
-    { id:'x14', yearsAgo: 400000000,   label: '節足動物の上陸' },
-    { id:'x15', yearsAgo: 360000000,   label: '両生類の上陸' },
-    { id:'x16', yearsAgo: 300000000,   label: 'は虫類の出現' },
-    { id:'x17', yearsAgo: 250000000,   label: '恐竜の出現' },
-    { id:'x18', yearsAgo: 225000000,   label: 'ほ乳類の出現' },
-    { id:'x19', yearsAgo: 150000000,   label: '鳥類の出現' },
-    { id:'x20', yearsAgo: 65500000,    label: '隕石落下、恐竜絶滅、霊長類の出現' },
+  const EVENTS_BEFORE = [
+    { id:'x1',  yearsAgo: 13800000000, exclude:true,
+      ja:'宇宙誕生（物質とエネルギー、星と銀河が生まれる）', en:'The Big Bang: matter, energy, stars and galaxies begin' },
+    { id:'x2',  yearsAgo: 4600000000, ja:'太陽が生まれ、地球という惑星が形成される', en:'The Sun is born and Earth forms' },
+    { id:'x3',  yearsAgo: 4000000000, ja:'海の誕生', en:'The oceans form' },
+    { id:'x4',  yearsAgo: 3800000000, ja:'有機体（生物）が出現する', en:'The first living organisms appear' },
+    { id:'x5',  yearsAgo: 3200000000, ja:'光合成をする生物が出現し、酸素ができる', en:'Photosynthetic life appears and starts producing oxygen' },
+    { id:'x6',  yearsAgo: 2220000000, ja:'全球凍結（1回目）', en:'Snowball Earth (1st)' },
+    { id:'x7',  yearsAgo: 2100000000, ja:'真核生物の出現', en:'Eukaryotes appear' },
+    { id:'x8',  yearsAgo: 2000000000, ja:'オゾン層の形成', en:'The ozone layer forms' },
+    { id:'x9',  yearsAgo: 1000000000, ja:'多細胞生物の出現', en:'Multicellular life appears' },
+    { id:'x10', yearsAgo: 700000000,  ja:'全球凍結（2回目）', en:'Snowball Earth (2nd)' },
+    { id:'x11', yearsAgo: 650000000,  ja:'全球凍結（3回目）', en:'Snowball Earth (3rd)' },
+    { id:'x12', yearsAgo: 540000000,  ja:'生物の多様化（カンブリア爆発）', en:'Life diversifies (the Cambrian explosion)' },
+    { id:'x13', yearsAgo: 420000000,  ja:'植物の上陸', en:'Plants move onto land' },
+    { id:'x14', yearsAgo: 400000000,  ja:'節足動物の上陸', en:'Arthropods move onto land' },
+    { id:'x15', yearsAgo: 360000000,  ja:'両生類の上陸', en:'Amphibians move onto land' },
+    { id:'x16', yearsAgo: 300000000,  ja:'は虫類の出現', en:'Reptiles appear' },
+    { id:'x17', yearsAgo: 250000000,  ja:'恐竜の出現', en:'Dinosaurs appear' },
+    { id:'x18', yearsAgo: 225000000,  ja:'ほ乳類の出現', en:'Mammals appear' },
+    { id:'x19', yearsAgo: 150000000,  ja:'鳥類の出現', en:'Birds appear' },
+    { id:'x20', yearsAgo: 65500000,   ja:'隕石落下、恐竜絶滅、霊長類の出現', en:'An asteroid strikes, dinosaurs die out, primates appear' },
   ];
 
-  const humanEvents = [
-    { id:'z1',  yearsAgo: 6000000,  label: 'チンパンジーとの分岐、直立二足歩行の開始' },
-    { id:'z2',  yearsAgo: 2500000,  label: 'アフリカでホモ属が進化。最初の石器' },
-    { id:'z3',  yearsAgo: 2000000,  label: '人類がアフリカからユーラシアへ拡がる' },
-    { id:'z4',  yearsAgo: 500000,   label: 'ネアンデルタール人が進化する' },
-    { id:'z5',  yearsAgo: 300000,   label: '火が日常的に使われるようになる' },
-    { id:'z6',  yearsAgo: 300000,   label: '東アフリカでホモ・サピエンスが進化する' },
-    { id:'z7',  yearsAgo: 70000,    label: '認知革命。虚構の言語が出現する' },
-    { id:'z8',  yearsAgo: 45000,    label: 'ホモ・サピエンスがオーストラリア大陸に住みつく' },
-    { id:'z9',  yearsAgo: 30000,    label: 'ネアンデルタール人が絶滅する' },
-    { id:'z10', yearsAgo: 16000,    label: 'ホモ・サピエンスがアメリカ大陸に住みつく' },
-    { id:'z11', yearsAgo: 12000,    label: '農業革命。植物の栽培化と定住' },
-    { id:'z12', yearsAgo: 5000,     label: '最初の王国、書記体系、貨幣' },
-    { id:'z13', yearsAgo: 4250,     label: '最初の帝国（アッカド帝国）' },
-    { id:'z14', yearsAgo: 2500,     label: '硬貨の発明、ペルシア帝国、インドの仏教' },
-    { id:'z15', yearsAgo: 2000,     label: '漢帝国、ローマ帝国、キリスト教' },
-    { id:'z16', yearsAgo: 1400,     label: 'イスラム教' },
-    { id:'z17', yearsAgo: 500,      label: '科学革命が起こる' },
-    { id:'z18', yearsAgo: 200,      label: '産業革命が起こる' },
-    { id:'z19', yearsAgo: 0,        label: '今日' },
+  const EVENTS_HUMAN = [
+    { id:'z1',  yearsAgo: 6000000, ja:'チンパンジーとの分岐、直立二足歩行の開始', en:'Split from chimpanzees; walking upright begins' },
+    { id:'z2',  yearsAgo: 2500000, ja:'アフリカでホモ属が進化。最初の石器', en:'The genus Homo evolves in Africa; the first stone tools' },
+    { id:'z3',  yearsAgo: 2000000, ja:'人類がアフリカからユーラシアへ拡がる', en:'Humans spread from Africa into Eurasia' },
+    { id:'z4',  yearsAgo: 500000,  ja:'ネアンデルタール人が進化する', en:'Neanderthals evolve' },
+    { id:'z5',  yearsAgo: 300000,  ja:'火が日常的に使われるようになる', en:'Fire comes into everyday use' },
+    { id:'z6',  yearsAgo: 300000,  ja:'東アフリカでホモ・サピエンスが進化する', en:'Homo sapiens evolves in East Africa' },
+    { id:'z7',  yearsAgo: 70000,   ja:'認知革命。虚構の言語が出現する', en:'The Cognitive Revolution: language for fiction emerges' },
+    { id:'z8',  yearsAgo: 45000,   ja:'ホモ・サピエンスがオーストラリア大陸に住みつく', en:'Homo sapiens settles Australia' },
+    { id:'z9',  yearsAgo: 30000,   ja:'ネアンデルタール人が絶滅する', en:'Neanderthals go extinct' },
+    { id:'z10', yearsAgo: 16000,   ja:'ホモ・サピエンスがアメリカ大陸に住みつく', en:'Homo sapiens settles the Americas' },
+    { id:'z11', yearsAgo: 12000,   ja:'農業革命。植物の栽培化と定住', en:'The Agricultural Revolution: farming and settled life' },
+    { id:'z12', yearsAgo: 5000,    ja:'最初の王国、書記体系、貨幣', en:'The first kingdoms, writing and money' },
+    { id:'z13', yearsAgo: 4250,    ja:'最初の帝国（アッカド帝国）', en:'The first empire (the Akkadian Empire)' },
+    { id:'z14', yearsAgo: 2500,    ja:'硬貨の発明、ペルシア帝国、インドの仏教', en:'Coins are invented; the Persian Empire; Buddhism in India' },
+    { id:'z15', yearsAgo: 2000,    ja:'漢帝国、ローマ帝国、キリスト教', en:'The Han Empire, the Roman Empire, Christianity' },
+    { id:'z16', yearsAgo: 1400,    ja:'イスラム教', en:'Islam' },
+    { id:'z17', yearsAgo: 500,     ja:'科学革命が起こる', en:'The Scientific Revolution' },
+    { id:'z18', yearsAgo: 200,     ja:'産業革命が起こる', en:'The Industrial Revolution' },
+    { id:'z19', yearsAgo: 0,       ja:'今日', en:'Today' },
   ];
 
-  // ---------- 計算 ----------
-  function computeDate(yearsAgo){
-    yearsAgo = Math.max(0, Math.min(EARTH_AGE, yearsAgo));
-    const a = (EARTH_AGE - yearsAgo) * 365 / EARTH_AGE; // 0〜365
-    let dayOfYear = Math.floor(a) + 1;
-    dayOfYear = Math.max(1, Math.min(365, dayOfYear));
+  const ALL_EVENTS = [...EVENTS_BEFORE, ...EVENTS_HUMAN];
+  const EVENT_BY_ID = new Map(ALL_EVENTS.map(e => [e.id, e]));
+  const PLACEABLE = ALL_EVENTS.filter(e => !e.exclude);
 
-    let month = 1, prevEnd = 0;
-    for(let i=0;i<MONTH_END_DAY.length;i++){
-      if(dayOfYear <= MONTH_END_DAY[i]){ month = i+1; prevEnd = i>0 ? MONTH_END_DAY[i-1] : 0; break; }
+  // ================= 翻訳 =================
+  const MONTHS_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  function trim2(x){ return x.toFixed(2).replace(/\.?0+$/, ''); }
+  function pad(n){ return String(n).padStart(2,'0'); }
+
+  const T = {
+    ja: {
+      docTitle: '地球カレンダー — 46億年を1年に',
+      title: '地球カレンダー',
+      lede: '46億年を、1年に。\n人類の歴史は、大晦日の最後の数十分の物語だ。',
+      langToggle: 'English',
+      langToggleAria: 'Switch to English',
+      viewTabsAria: '円の表示範囲',
+      tabs: { year:'1年', dec31:'12月31日', lastmin:'最後の1分' },
+      scale: {
+        year: '円の1周 = 46億年',
+        dec31: '円の1周 = 12月31日の24時間（約1,260万年）',
+        lastmin: '円の1周 = 12月31日 23時59分からの最後の1分（約8,750年）'
+      },
+      wheelAria: '1年に圧縮した地球の歴史カレンダー',
+      panelPlaceholder: '円周上の点にカーソルを合わせると、ここに出来事が表示される。',
+      wheelNote: '点にカーソルを合わせる（スマホはタップ）と、円の中の暦と下の説明が切り替わる。二重丸の点は出来事が重なっている時間帯で、クリックするとその部分を拡大できる。',
+      excludedPanel: label => `「${label}」は地球が誕生するよりも前の出来事なので、このカレンダーには対応する位置がない。`,
+      excludedCaption: '換算できません',
+      excludedTime: '地球誕生より前の出来事',
+      play: '▶ 再生', pause: '⏸ 一時停止', replay: '↻ もう一度再生',
+      reset: 'リセット',
+      todayDate: '今日の日付',
+      todayOnDay: date => `今日（${date}）にあたる出来事`,
+      todayBetween: date => `今日（${date}）は、この2つの出来事のあいだ。`,
+      betweenPrev: 'この前の出来事',
+      betweenNext: 'この次の出来事',
+      speed: '速度',
+      speeds: ['0.5倍','1倍','2倍','4倍'],
+      copyLink: 'リンクをコピー',
+      copied: 'この画面のリンクをコピーした',
+      copyManual: 'このURLをコピーすると、今の画面を共有できる。',
+      inputLabel: '何年前を1年に変換する？',
+      unit: '年前',
+      convert: '変換する',
+      placeholder: '例: 10000',
+      sliderAria: '年数（対数目盛り）',
+      sliderToday: '今日',
+      sliderMax: '46億年前',
+      eventsHeading: '主な出来事から選ぶ',
+      groupBefore: 'ヒトの登場前',
+      groupHuman: 'ヒトの登場',
+      footer: '主な出来事の年代は『サピエンス全史』と『ビッグヒストリー』等を参考。',
+      zoomHint: 'クリックで拡大',
+      locale: 'ja-JP',
+      yearsFull: y => y === 0 ? '今日' : `${y.toLocaleString('ja-JP')}年前`,
+      yearsShort: y => {
+        if(y === 0) return '今日';
+        if(y >= 1e8) return trim2(y/1e8) + '億年前';
+        if(y >= 1e4) return trim2(y/1e4) + '万年前';
+        return y.toLocaleString('ja-JP') + '年前';
+      },
+      date: (m, d) => `${m}月${d}日`,
+      dayOfYear: n => `${n}日目`,
+      month: m => `${m}月`,
+      hour: h => `${h}時`,
+      sec: s => s === 0 ? '23:59' : `${s}秒`,
+      excludedDate: y => trim2(y/1e8) + '億年前'
+    },
+    en: {
+      docTitle: 'Earth Calendar: 4.6 billion years in one year',
+      title: 'Earth Calendar',
+      lede: '4.6 billion years, in one year.\nHuman history is the story of the last few dozen minutes of New Year’s Eve.',
+      langToggle: '日本語',
+      langToggleAria: '日本語に切り替え',
+      viewTabsAria: 'Calendar zoom',
+      tabs: { year:'Full year', dec31:'Dec 31', lastmin:'Final minute' },
+      scale: {
+        year: 'One lap = 4.6 billion years',
+        dec31: 'One lap = the 24 hours of Dec 31 (about 12.6 million years)',
+        lastmin: 'One lap = the final minute, from 23:59 on Dec 31 (about 8,750 years)'
+      },
+      wheelAria: 'Earth’s history compressed into one calendar year',
+      panelPlaceholder: 'Hover over a dot on the circle to see what happened there.',
+      wheelNote: 'Hover over a dot (or tap it on a phone) to update the calendar and the details below. Double-ringed dots mark crowded moments. Click one to zoom in.',
+      excludedPanel: label => `${label} happened before Earth formed, so it has no place on this calendar.`,
+      excludedCaption: 'Out of range',
+      excludedTime: 'Before Earth formed',
+      play: '▶ Play', pause: '⏸ Pause', replay: '↻ Play again',
+      reset: 'Reset',
+      todayDate: 'Today’s date',
+      todayOnDay: date => `What falls on today (${date})`,
+      todayBetween: date => `Today (${date}) falls between these two events.`,
+      betweenPrev: 'Before today',
+      betweenNext: 'After today',
+      speed: 'Speed',
+      speeds: ['0.5×','1×','2×','4×'],
+      copyLink: 'Copy link',
+      copied: 'Link to this view copied',
+      copyManual: 'Copy this URL to share the current view.',
+      inputLabel: 'How many years ago?',
+      unit: 'years ago',
+      convert: 'Convert',
+      placeholder: 'e.g. 10000',
+      sliderAria: 'Years ago (log scale)',
+      sliderToday: 'Today',
+      sliderMax: '4.6 billion years ago',
+      eventsHeading: 'Pick an event',
+      groupBefore: 'Before humans',
+      groupHuman: 'The age of humans',
+      footer: 'Event dates are based on Sapiens: A Brief History of Humankind, Big History, and other sources.',
+      zoomHint: 'Click to zoom in',
+      locale: 'en-US',
+      yearsFull: y => y === 0 ? 'Today' : `${y.toLocaleString('en-US')} years ago`,
+      yearsShort: y => {
+        if(y === 0) return 'Today';
+        if(y >= 1e9) return `${trim2(y/1e9)} billion years ago`;
+        if(y >= 1e6) return `${trim2(y/1e6)} million years ago`;
+        return `${y.toLocaleString('en-US')} years ago`;
+      },
+      date: (m, d) => `${MONTHS_EN[m-1]} ${d}`,
+      dayOfYear: n => `Day ${n}`,
+      month: m => MONTHS_EN[m-1],
+      hour: h => `${h}:00`,
+      sec: s => s === 0 ? '23:59' : `:${pad(s)}`,
+      excludedDate: y => `${trim2(y/1e9)} billion years ago`
     }
-    const day = dayOfYear - prevEnd;
+  };
 
-    const frac = a - Math.floor(a);
-    const totalSeconds = frac * 86400;
-    const hour = Math.floor(totalSeconds/3600);
-    const minute = Math.floor((totalSeconds%3600)/60);
-    const second = Math.floor(totalSeconds%60);
+  // ================= 状態 =================
+  const state = {
+    lang: 'ja',
+    view: 'year',
+    years: 0,
+    focusId: null,      // 選択中の出来事
+    excludedId: null,   // 換算できない出来事を選んでいるとき
+  };
+  let display = { type:'years', years:0 };       // 円の中に今出している内容
+  let panelState = { type:'placeholder' };        // パネルに今出している内容
+  let playLabelKey = 'play';
 
-    return { dayOfYear, month, day, hour, minute, second, angle: (a/365)*360 };
+  function t(key){ return T[state.lang][key]; }
+  function labelOf(ev){ return ev[state.lang]; }
+
+  // ================= 計算 =================
+  function clampYears(y){ return Math.max(0, Math.min(EARTH_AGE, y)); }
+  function aOf(y){ return (EARTH_AGE - clampYears(y)) * 365 / EARTH_AGE; } // 0〜365（日）
+
+  function computeDate(y){
+    const a = aOf(y);
+    if(a >= 365) return { a:365, dayOfYear:365, month:12, day:31, hour:24, minute:0, second:0 };
+    const dayOfYear = Math.min(365, Math.floor(a) + 1);
+    let month = 12, prevEnd = 334;
+    for(let i = 0; i < MONTH_END_DAY.length; i++){
+      if(dayOfYear <= MONTH_END_DAY[i]){ month = i + 1; prevEnd = i > 0 ? MONTH_END_DAY[i-1] : 0; break; }
+    }
+    const secs = (a - Math.floor(a)) * 86400;
+    return {
+      a, dayOfYear, month, day: dayOfYear - prevEnd,
+      hour: Math.floor(secs / 3600),
+      minute: Math.floor((secs % 3600) / 60),
+      second: Math.floor(secs % 60)
+    };
   }
 
-  // ---------- 対数スライダー ----------
+  // 表示範囲（単位はaと同じ「日」）
+  const VIEWS = {
+    year:    { start: 0,               end: 365 },
+    dec31:   { start: 364,             end: 365 },
+    lastmin: { start: 365 - 60/86400,  end: 365 }
+  };
+  const VIEW_ORDER = ['year', 'dec31', 'lastmin'];
+
+  function inView(view, a){ return a >= VIEWS[view].start - 1e-9; }
+  function angleIn(view, a){
+    const v = VIEWS[view];
+    return Math.min(360, Math.max(0, (a - v.start) / (v.end - v.start) * 360));
+  }
+  function finestView(a){
+    if(inView('lastmin', a)) return 'lastmin';
+    if(inView('dec31', a)) return 'dec31';
+    return 'year';
+  }
+
+  // 対数スライダー
   const MAX_LOG = Math.log10(EARTH_AGE);
-  function sliderToYears(s){
-    if(s <= 0) return 0;
-    return Math.pow(10, (s/1000) * MAX_LOG);
-  }
+  function sliderToYears(s){ return s <= 0 ? 0 : Math.pow(10, (s/1000) * MAX_LOG); }
   function yearsToSlider(y){
     if(y <= 1) return 0;
-    return Math.round(Math.min(1000, Math.max(0, (Math.log10(y)/MAX_LOG)*1000)));
+    return Math.round(Math.min(1000, Math.max(0, (Math.log10(y)/MAX_LOG) * 1000)));
   }
 
-  // ---------- SVG ホイール描画 ----------
+  // ================= 出来事のまとまり（表示範囲ごと） =================
+  const THRESH = 2.5; // この角度より近い出来事は1つの点にまとめる
+
+  function buildGroups(view){
+    const pts = PLACEABLE
+      .map(ev => ({ ev, a: aOf(ev.yearsAgo) }))
+      .filter(p => inView(view, p.a))
+      .map(p => ({ ...p, angle: angleIn(view, p.a) }))
+      .sort((p, q) => p.angle - q.angle || q.ev.yearsAgo - p.ev.yearsAgo);
+
+    const groups = [];
+    pts.forEach(p => {
+      const g = groups[groups.length - 1];
+      if(g && p.angle - g.last < THRESH){ g.items.push(p.ev); g.last = p.angle; }
+      else groups.push({ items:[p.ev], first:p.angle, last:p.angle });
+    });
+
+    const next = VIEW_ORDER[VIEW_ORDER.indexOf(view) + 1];
+    groups.forEach(g => {
+      g.angle = (g.first + g.last) / 2;
+      g.zoomTo = (next && g.items.length > 1 && g.items.some(ev => inView(next, aOf(ev.yearsAgo)))) ? next : null;
+    });
+    return groups;
+  }
+
+  const GROUPS = { year: buildGroups('year'), dec31: buildGroups('dec31'), lastmin: buildGroups('lastmin') };
+  function groupContaining(view, ev){ return GROUPS[view].find(g => g.items.includes(ev)); }
+
+  // ================= 要素 =================
   const svg = document.getElementById('wheel');
+  const panel = document.getElementById('detailPanel');
+  const readoutCaption = document.getElementById('readoutCaption');
+  const readoutDate = document.getElementById('readoutDate');
+  const readoutTime = document.getElementById('readoutTime');
+  const yearsInput = document.getElementById('yearsInput');
+  const yearsSlider = document.getElementById('yearsSlider');
+  const playBtn = document.getElementById('playBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const speedSelect = document.getElementById('speedSelect');
+  const copyBtn = document.getElementById('copyBtn');
+  const copyStatus = document.getElementById('copyStatus');
+  const langBtn = document.getElementById('langBtn');
+  const viewTabs = document.getElementById('viewTabs');
+  const scaleNote = document.getElementById('scaleNote');
+
+  // ================= SVG =================
   const CX = 240, CY = 240, R = 168;
   const NS = 'http://www.w3.org/2000/svg';
+  const circumference = 2 * Math.PI * R;
 
   function polar(angleDeg, radius){
     const rad = (angleDeg - 90) * Math.PI / 180;
-    return { x: CX + radius*Math.cos(rad), y: CY + radius*Math.sin(rad) };
+    return { x: CX + radius * Math.cos(rad), y: CY + radius * Math.sin(rad) };
   }
   function el(tag, attrs){
     const e = document.createElementNS(NS, tag);
@@ -558,326 +900,638 @@
     return e;
   }
 
-  const circumference = 2*Math.PI*R;
-
-  // ベースの円
   svg.appendChild(el('circle', { cx:CX, cy:CY, r:R, fill:'none', stroke:'var(--line-strong)', 'stroke-width':1.5 }));
-
-  // 進捗リング
   const progressRing = el('circle', {
     cx:CX, cy:CY, r:R, fill:'none', stroke:'var(--amber)', 'stroke-width':4,
-    'stroke-linecap':'round', 'stroke-dasharray': `0 ${circumference}`,
+    'stroke-linecap':'round', 'stroke-dasharray':`0 ${circumference}`,
     transform:`rotate(-90 ${CX} ${CY})`
   });
   svg.appendChild(progressRing);
+  // 現在位置マーカー（出来事の点より下に描き、二重丸が隠れないようにする。クリックは透過）
+  const markerLine = el('line', { class:'position-marker', x1:CX, y1:CY, x2:CX, y2:CY, stroke:'var(--amber)', 'stroke-width':2, opacity:0.55 });
+  const markerGlow = el('circle', { class:'position-marker', cx:CX, cy:CY-R, r:12, fill:'var(--amber)', opacity:0.25 });
+  const markerDot = el('circle', { class:'position-marker', cx:CX, cy:CY-R, r:6.5, fill:'var(--amber)' });
+  svg.appendChild(markerLine);
+  svg.appendChild(markerGlow);
+  svg.appendChild(markerDot);
 
-  // 月の区切りと数字（内側）
-  let prevCum = 0;
-  MONTH_END_DAY.forEach((cum, i) => {
-    const boundaryAngle = (cum/365)*360;
-    const p1 = polar(boundaryAngle, R-5);
-    const p2 = polar(boundaryAngle, R+5);
-    svg.appendChild(el('line', { x1:p1.x, y1:p1.y, x2:p2.x, y2:p2.y, stroke:'var(--line-strong)', 'stroke-width':1.2 }));
+  const tickLayer = el('g', { class:'layer' });
+  const markerLayer = el('g', { class:'layer' });
+  svg.appendChild(tickLayer);
+  svg.appendChild(markerLayer);
 
-    const midAngle = ((prevCum+cum)/2/365)*360;
-    const lp = polar(midAngle, R-26);
-    const t = el('text', { x:lp.x, y:lp.y, fill:'var(--ink-faint)', 'font-size':'11', 'font-family':'Work Sans, sans-serif', 'text-anchor':'middle', 'dominant-baseline':'middle' });
-    t.textContent = `${i+1}月`;
-    svg.appendChild(t);
-    prevCum = cum;
+  // 拡大した直後、カーソルの真下に現れた点が勝手に反応しないようにする
+  let hoverLock = null;
+  svg.addEventListener('pointermove', e => {
+    if(hoverLock && Math.hypot(e.clientX - hoverLock.x, e.clientY - hoverLock.y) > 12) hoverLock = null;
   });
+  function hoverAllowed(){ return hoverLock === null; }
 
-  // 出来事マーカー（円周上・ホバー / タップで詳細を表示）
-  // 同じ日に重なる出来事は1つの点にまとめる（人類史はほぼ全件が大晦日に重なる）
-  const allPlaceableEvents = [...beforeHumanEvents, ...humanEvents].filter(e => !e.exclude);
-  const groupsByDay = new Map();
-  allPlaceableEvents.forEach(ev => {
-    const d = computeDate(ev.yearsAgo);
-    if(!groupsByDay.has(d.dayOfYear)) groupsByDay.set(d.dayOfYear, { angle: d.angle, items: [] });
-    groupsByDay.get(d.dayOfYear).items.push(ev);
-  });
-
-  const panel = document.getElementById('detailPanel');
-
-  function yearsLabel(y){
-    if(y === 0) return '今日';
-    if(y >= 100000000) return (y/100000000).toFixed(2).replace(/\.?0+$/,'') + '億年前';
-    if(y >= 10000) return Math.round(y/10000).toLocaleString('ja-JP') + '万年前';
-    return y.toLocaleString('ja-JP') + '年前';
+  function tick(angle, inner, outer, width){
+    const p1 = polar(angle, inner), p2 = polar(angle, outer);
+    tickLayer.appendChild(el('line', { x1:p1.x, y1:p1.y, x2:p2.x, y2:p2.y, stroke:'var(--line-strong)', 'stroke-width':width }));
+  }
+  function tickLabel(angle, text){
+    const p = polar(angle, R - 26);
+    const n = el('text', { x:p.x, y:p.y, fill:'var(--ink-faint)', 'font-size':'11', 'font-family':'Work Sans, sans-serif', 'text-anchor':'middle', 'dominant-baseline':'middle' });
+    n.textContent = text;
+    tickLayer.appendChild(n);
   }
 
-  function renderPanel(group, focusItem){
-    const items = [...group.items].sort((a,b) => b.yearsAgo - a.yearsAgo);
-    const multi = items.length > 1;
-    panel.innerHTML = '';
+  function drawTicks(view){
+    tickLayer.replaceChildren();
+    const L = T[state.lang];
+    if(view === 'year'){
+      let prev = 0;
+      MONTH_END_DAY.forEach((cum, i) => {
+        tick(cum/365*360, R-5, R+5, 1.2);
+        tickLabel((prev + cum) / 2 / 365 * 360, L.month(i + 1));
+        prev = cum;
+      });
+    } else if(view === 'dec31'){
+      for(let h = 0; h < 24; h++){
+        const major = h % 3 === 0;
+        tick(h/24*360, major ? R-5 : R-3, major ? R+5 : R+3, major ? 1.2 : 0.8);
+        if(major) tickLabel(h/24*360, L.hour(h));
+      }
+    } else {
+      for(let s = 0; s < 60; s++){
+        const major = s % 10 === 0;
+        tick(s/60*360, major ? R-5 : R-2.5, major ? R+5 : R+2.5, major ? 1.2 : 0.7);
+        if(major) tickLabel(s/60*360, L.sec(s));
+      }
+    }
+  }
+
+  function drawMarkers(view){
+    markerLayer.replaceChildren();
+    const groups = GROUPS[view];
+    const hasEndGroup = groups.some(g => g.last > 360 - THRESH);
+
+    groups.forEach(g => {
+      // 円の始点（0°）と終点（360°）は同じ位置になるため、始点側の点は外側にずらして描く
+      const offset = hasEndGroup && g.first < THRESH;
+      const r = offset ? R + 18 : R;
+      const p = polar(g.angle, r);
+      const multi = g.items.length > 1;
+      const color = g.items.some(ev => ev.id[0] === 'z') ? 'var(--violet)' : 'var(--teal)';
+
+      const aria = g.items.map(ev => `${t('yearsShort')(ev.yearsAgo)} ${labelOf(ev)}`).join('。')
+        + (g.zoomTo ? `。${t('zoomHint')}` : '');
+      const node = el('g', { class:'event-marker', tabindex:'0', role:'button', 'aria-label':aria });
+
+      if(offset){
+        const a1 = polar(g.angle, R + 4), a2 = polar(g.angle, R + 11);
+        node.appendChild(el('line', { x1:a1.x, y1:a1.y, x2:a2.x, y2:a2.y, stroke:'var(--line-strong)', 'stroke-width':1.2 }));
+      }
+      node.appendChild(el('circle', { cx:p.x, cy:p.y, r:11, fill:'transparent' }));
+      if(g.zoomTo){
+        node.appendChild(el('circle', { cx:p.x, cy:p.y, r:10, fill:'none', stroke:color, 'stroke-width':1.3, opacity:0.75 }));
+      }
+      node.appendChild(el('circle', { cx:p.x, cy:p.y, r: multi ? 6 : 4, fill:color, class:'marker-dot' }));
+      markerLayer.appendChild(node);
+
+      const activate = (e) => {
+        if(g.zoomTo){
+          if(e) hoverLock = { x: e.clientX, y: e.clientY };
+          setView(g.zoomTo);
+          syncURL();
+        }
+        renderPanel(g.items, null);
+      };
+      node.addEventListener('mouseenter', () => { if(hoverAllowed()) renderPanel(g.items, null); });
+      node.addEventListener('focus', () => renderPanel(g.items, null));
+      node.addEventListener('click', e => { e.stopPropagation(); activate(e); });
+      node.addEventListener('keydown', e => {
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); activate(null); }
+      });
+    });
+  }
+
+  function fadeInLayers(){
+    tickLayer.style.opacity = 0;
+    markerLayer.style.opacity = 0;
+    requestAnimationFrame(() => {
+      tickLayer.style.opacity = 1;
+      markerLayer.style.opacity = 1;
+    });
+  }
+
+  function updateWheel(a){
+    const visible = a !== null && inView(state.view, a);
+    const angle = visible ? angleIn(state.view, a) : 0;
+    const p = polar(angle, R);
+    markerLine.setAttribute('x2', p.x); markerLine.setAttribute('y2', p.y);
+    markerDot.setAttribute('cx', p.x);  markerDot.setAttribute('cy', p.y);
+    markerGlow.setAttribute('cx', p.x); markerGlow.setAttribute('cy', p.y);
+    markerLine.style.opacity = visible ? 0.55 : 0;
+    markerDot.style.opacity = visible ? 1 : 0;
+    markerGlow.style.opacity = visible ? 0.25 : 0;
+    const arc = angle / 360 * circumference;
+    progressRing.setAttribute('stroke-dasharray', visible ? `${arc} ${circumference - arc}` : `0 ${circumference}`);
+  }
+
+  // ================= 表示範囲の切り替え =================
+  function setView(view, { force = false } = {}){
+    if(!VIEWS[view]) return;
+    const changed = view !== state.view;
+    state.view = view;
+    viewTabs.querySelectorAll('.view-tab').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
+    scaleNote.textContent = t('scale')[view];
+    if(changed || force){
+      drawTicks(view);
+      drawMarkers(view);
+      if(changed) fadeInLayers();
+    }
+    updateWheel(display.type === 'years' ? aOf(display.years) : null);
+  }
+
+  // ================= 円の中の表示 =================
+  function render(y){
+    display = { type:'years', years:y };
+    const d = computeDate(y);
+    updateWheel(d.a);
+    readoutCaption.textContent = `${t('yearsFull')(Math.round(y))} · ${t('dayOfYear')(d.dayOfYear)}`;
+    readoutDate.textContent = t('date')(d.month, d.day);
+    readoutTime.textContent = `${pad(d.hour)}:${pad(d.minute)}:${pad(d.second)}`;
+  }
+
+  function renderExcluded(y){
+    display = { type:'excluded', years:y };
+    updateWheel(null);
+    readoutCaption.textContent = t('excludedCaption');
+    readoutDate.textContent = t('excludedDate')(y);
+    readoutTime.textContent = t('excludedTime');
+  }
+
+  function setYears(y, { view = 'none', fromSlider = false } = {}){
+    y = Number.isInteger(y) ? clampYears(y) : Math.round(clampYears(y));
+    state.years = y;
+    state.excludedId = null;
+    yearsInput.value = y.toLocaleString(t('locale'));
+    if(!fromSlider) yearsSlider.value = yearsToSlider(y);
+    const a = aOf(y);
+    if(view === 'finest') setView(finestView(a));
+    else if(view === 'fit' && !inView(state.view, a)) setView(finestView(a));
+    render(y);
+  }
+
+  // ================= 説明パネル =================
+  function makeHeading(text){
+    const h = document.createElement('p');
+    h.className = 'panel-heading';
+    h.textContent = text;
+    return h;
+  }
+
+  function makeRow(ev, tag){
+    const row = document.createElement('div');
+    row.className = 'panel-row';
+    row.tabIndex = 0;
+    const y = document.createElement('span');
+    y.className = 'panel-year';
+    y.textContent = t('yearsShort')(ev.yearsAgo);
+    if(tag){
+      const tg = document.createElement('span');
+      tg.className = 'panel-tag';
+      tg.textContent = tag;
+      y.appendChild(tg);
+    }
+    const l = document.createElement('span');
+    l.className = 'panel-label';
+    l.textContent = labelOf(ev);
+    row.append(y, l);
+    row.addEventListener('mouseenter', () => { if(!playing) render(ev.yearsAgo); });
+    row.addEventListener('focus', () => { if(!playing) render(ev.yearsAgo); });
+    row.addEventListener('click', () => { if(!playing) render(ev.yearsAgo); });
+    return row;
+  }
+
+  function renderPanel(items, focusEv, { syncReadout = true, heading = null } = {}){
+    panelState = { type:'group', ids: items.map(e => e.id), focusId: focusEv ? focusEv.id : null, heading };
+    const sorted = [...items].sort((a, b) => b.yearsAgo - a.yearsAgo);
+    const multi = sorted.length > 1;
+    panel.replaceChildren();
+    if(heading) panel.appendChild(makeHeading(heading()));
     let activeRow = null;
-    items.forEach(it => {
-      const isActive = multi && it === focusItem;
-      const row = document.createElement('div');
-      row.className = 'panel-row' + (isActive ? ' active' : '');
-      row.tabIndex = 0;
 
-      const y = document.createElement('span');
-      y.className = 'panel-year';
-      y.textContent = yearsLabel(it.yearsAgo);
-
-      const l = document.createElement('span');
-      l.className = 'panel-label';
-      l.textContent = it.label;
-
-      row.appendChild(y);
-      row.appendChild(l);
-      // この項目にカーソルを合わせたら、円の中の表示もその出来事に切り替える
-      row.addEventListener('mouseenter', () => render(it.yearsAgo));
-      row.addEventListener('focus', () => render(it.yearsAgo));
+    sorted.forEach(ev => {
+      const isActive = multi && ev === focusEv;
+      // この行にカーソルを合わせると、円の中の表示もその出来事に切り替わる
+      const row = makeRow(ev);
+      if(isActive) row.classList.add('active');
 
       if(isActive) activeRow = row;
       panel.appendChild(row);
     });
-    // 選択された項目があればそれを、なければ先頭の項目を円の中に表示する
-    render((focusItem || items[0]).yearsAgo);
-    // 複数件の中から選んだ場合は、その行が見える位置までパネルをスクロールする
+
+    if(syncReadout){
+      const target = focusEv || sorted.find(ev => inView(state.view, aOf(ev.yearsAgo))) || sorted[0];
+      render(target.yearsAgo);
+    }
+
     if(activeRow){
-      const target = activeRow.offsetTop - panel.clientHeight/2 + activeRow.offsetHeight/2;
-      panel.scrollTop = Math.max(0, target);
+      panel.scrollTop = Math.max(0, activeRow.offsetTop - panel.clientHeight/2 + activeRow.offsetHeight/2);
     } else {
       panel.scrollTop = 0;
     }
   }
 
+  function renderPanelMessage(text){
+    panel.replaceChildren();
+    const p = document.createElement('p');
+    p.className = 'panel-placeholder';
+    p.textContent = text;
+    panel.appendChild(p);
+    panel.scrollTop = 0;
+  }
+
   function renderPanelExcluded(ev){
-    panel.innerHTML = `<p class="panel-placeholder">${ev.label}は、地球が誕生するよりも前の出来事。このカレンダーには対応する位置がないよ。</p>`;
+    panelState = { type:'excluded', id: ev.id };
+    renderPanelMessage(t('excludedPanel')(labelOf(ev)));
   }
 
-  groupsByDay.forEach(group => {
-    const hasHuman = group.items.some(it => it.id[0] === 'z');
-    const multi = group.items.length > 1;
-    const p = polar(group.angle, R);
-
-    const g = el('g', {
-      class: 'event-marker',
-      tabindex: '0',
-      role: 'button',
-      'aria-label': group.items.map(it => `${yearsLabel(it.yearsAgo)} ${it.label}`).join('。')
-    });
-    g.appendChild(el('circle', { cx:p.x, cy:p.y, r:11, fill:'transparent' }));
-    g.appendChild(el('circle', {
-      cx:p.x, cy:p.y, r: multi ? 6 : 4,
-      fill: hasHuman ? 'var(--amber)' : 'var(--teal)',
-      class: 'marker-dot'
-    }));
-    svg.appendChild(g);
-
-    g.addEventListener('mouseenter', () => renderPanel(group));
-    g.addEventListener('focus', () => renderPanel(group));
-    g.addEventListener('click', (e) => { e.stopPropagation(); renderPanel(group); });
-  });
-
-  // 現在位置マーカー
-  const markerLine = el('line', { x1:CX, y1:CY, x2:CX, y2:CY, stroke:'var(--amber)', 'stroke-width':2, opacity:0.55 });
-  svg.appendChild(markerLine);
-  const markerDot = el('circle', { cx:CX, cy:CY-R, r:6.5, fill:'var(--amber)' });
-  svg.appendChild(markerDot);
-  const markerGlow = el('circle', { cx:CX, cy:CY-R, r:12, fill:'var(--amber)', opacity:0.25 });
-  svg.insertBefore(markerGlow, markerDot);
-
-  function updateWheel(angleDeg, visible){
-    const p = polar(angleDeg, R);
-    markerLine.setAttribute('x2', p.x);
-    markerLine.setAttribute('y2', p.y);
-    markerDot.setAttribute('cx', p.x);
-    markerDot.setAttribute('cy', p.y);
-    markerGlow.setAttribute('cx', p.x);
-    markerGlow.setAttribute('cy', p.y);
-    markerLine.style.opacity = visible ? 0.55 : 0;
-    markerDot.style.opacity = visible ? 1 : 0;
-    markerGlow.style.opacity = visible ? 0.25 : 0;
-
-    const arcLen = (angleDeg/360) * circumference;
-    progressRing.setAttribute('stroke-dasharray', visible ? `${arcLen} ${circumference-arcLen}` : `0 ${circumference}`);
+  // 今日の日付に出来事がないとき：前後2つの出来事を並べる
+  function renderPanelBetween(prev, next, dateInfo){
+    panelState = { type:'between', prevId: prev.id, nextId: next.id, dateInfo };
+    panel.replaceChildren();
+    panel.appendChild(makeHeading(t('todayBetween')(t('date')(dateInfo.month, dateInfo.day))));
+    panel.appendChild(makeRow(prev, t('betweenPrev')));
+    panel.appendChild(makeRow(next, t('betweenNext')));
+    panel.scrollTop = 0;
   }
 
-  // ---------- 表示更新 ----------
-  const readoutCaption = document.getElementById('readoutCaption');
-  const readoutDate = document.getElementById('readoutDate');
-  const readoutTime = document.getElementById('readoutTime');
-  const yearsInput = document.getElementById('yearsInput');
-  const yearsSlider = document.getElementById('yearsSlider');
-
-  function formatYearsAgo(y){
-    if(y === 0) return '今日';
-    return y.toLocaleString('ja-JP') + '年前';
-  }
-  function pad(n){ return String(n).padStart(2,'0'); }
-
-  function render(yearsAgo){
-    const d = computeDate(yearsAgo);
-    updateWheel(d.angle, true);
-    readoutCaption.textContent = `${formatYearsAgo(Math.round(yearsAgo))} · ${d.dayOfYear}日目`;
-    readoutDate.textContent = `${d.month}月${d.day}日`;
-    readoutTime.textContent = `${pad(d.hour)}:${pad(d.minute)}:${pad(d.second)}`;
+  function renderPanelPlaceholder(){
+    panelState = { type:'placeholder' };
+    renderPanelMessage(t('panelPlaceholder'));
   }
 
-  function renderExcluded(yearsAgo){
-    updateWheel(0, false);
-    readoutCaption.textContent = '換算できません';
-    readoutDate.textContent = `${(yearsAgo/100000000).toFixed(1)}億年前`;
-    readoutTime.textContent = '地球誕生より前の出来事';
+  function rerenderPanel(){
+    if(panelState.type === 'group'){
+      renderPanel(panelState.ids.map(id => EVENT_BY_ID.get(id)), EVENT_BY_ID.get(panelState.focusId) || null, { syncReadout:false, heading: panelState.heading });
+    } else if(panelState.type === 'between'){
+      renderPanelBetween(EVENT_BY_ID.get(panelState.prevId), EVENT_BY_ID.get(panelState.nextId), panelState.dateInfo);
+    } else if(panelState.type === 'excluded'){
+      renderPanelExcluded(EVENT_BY_ID.get(panelState.id));
+    } else {
+      renderPanelPlaceholder();
+    }
   }
 
-  function setYears(yearsAgo, { fromEvent } = {}){
-    yearsAgo = Math.max(0, Math.min(EARTH_AGE, Math.round(yearsAgo)));
-    yearsInput.value = yearsAgo.toLocaleString('ja-JP');
-    yearsSlider.value = yearsToSlider(yearsAgo);
-    render(yearsAgo);
+  // ================= 出来事を選ぶ =================
+  function selectEvent(ev, { view = null, commit = true } = {}){
+    if(playing) stopPlayback();
+    if(ev.exclude){
+      state.focusId = ev.id;
+      state.excludedId = ev.id;
+      yearsInput.value = ev.yearsAgo.toLocaleString(t('locale'));
+      yearsSlider.value = 1000;
+      renderExcluded(ev.yearsAgo);
+      renderPanelExcluded(ev);
+    } else {
+      const a = aOf(ev.yearsAgo);
+      setView((view && VIEWS[view] && inView(view, a)) ? view : finestView(a));
+      setYears(ev.yearsAgo);
+      state.focusId = ev.id;
+      const g = groupContaining(state.view, ev);
+      if(g) renderPanel(g.items, ev);
+    }
+    if(commit) syncURL();
   }
 
-  // ---------- イベントリスト描画 ----------
-  function buildList(container, events){
-    events.forEach(ev => {
-      const li = document.createElement('li');
-      const btn = document.createElement('button');
-      btn.className = 'event-item';
-      btn.type = 'button';
-
-      const yearSpan = document.createElement('span');
-      yearSpan.className = 'event-year';
-      yearSpan.textContent = ev.yearsAgo >= 100000000
-        ? (ev.yearsAgo/100000000).toFixed(2).replace(/\.?0+$/,'') + '億年前'
-        : formatYearsAgo(ev.yearsAgo);
-
-      const labelSpan = document.createElement('span');
-      labelSpan.className = 'event-label';
-      labelSpan.textContent = ev.label;
-
-      btn.appendChild(yearSpan);
-      btn.appendChild(labelSpan);
-      btn.addEventListener('click', () => {
-        if(ev.exclude){
-          renderExcluded(ev.yearsAgo);
-          yearsInput.value = ev.yearsAgo.toLocaleString('ja-JP');
-          yearsSlider.value = 1000;
-          renderPanelExcluded(ev);
-        } else {
-          setYears(ev.yearsAgo);
-          const dayOfYear = computeDate(ev.yearsAgo).dayOfYear;
-          const group = groupsByDay.get(dayOfYear);
-          if(group) renderPanel(group, ev);
-        }
+  function buildLists(){
+    [['beforeHumanList', EVENTS_BEFORE], ['humanList', EVENTS_HUMAN]].forEach(([id, events]) => {
+      const container = document.getElementById(id);
+      container.replaceChildren();
+      events.forEach(ev => {
+        const li = document.createElement('li');
+        const btn = document.createElement('button');
+        btn.className = 'event-item';
+        btn.type = 'button';
+        const y = document.createElement('span');
+        y.className = 'event-year';
+        y.textContent = t('yearsShort')(ev.yearsAgo);
+        const l = document.createElement('span');
+        l.className = 'event-label';
+        l.textContent = labelOf(ev);
+        btn.append(y, l);
+        btn.addEventListener('click', () => selectEvent(ev));
+        li.appendChild(btn);
+        container.appendChild(li);
       });
-
-      li.appendChild(btn);
-      container.appendChild(li);
     });
   }
 
-  buildList(document.getElementById('beforeHumanList'), beforeHumanEvents);
-  buildList(document.getElementById('humanList'), humanEvents);
-
-  // ---------- 入力欄・スライダーの配線 ----------
+  // ================= 入力欄・スライダー =================
   function parseInput(){
-    const raw = yearsInput.value.replace(/[,，]/g, '').trim();
+    const raw = yearsInput.value.replace(/[,，\s]/g, '');
+    if(raw === '') return null;
     const n = Number(raw);
     return Number.isFinite(n) && n >= 0 ? n : null;
   }
 
-  document.getElementById('convertBtn').addEventListener('click', () => {
+  function doConvert(){
     const n = parseInput();
-    if(n !== null) setYears(n);
-  });
+    if(n === null) return;
+    if(playing) stopPlayback();
+    state.focusId = null;
+    setYears(n, { view:'finest' });
+    syncURL();
+  }
 
-  yearsInput.addEventListener('keydown', (e) => {
-    if(e.key === 'Enter'){
-      const n = parseInput();
-      if(n !== null) setYears(n);
-    }
-  });
+  document.getElementById('convertBtn').addEventListener('click', doConvert);
+  yearsInput.addEventListener('keydown', e => { if(e.key === 'Enter') doConvert(); });
+  yearsInput.addEventListener('input', () => { if(playing) stopPlayback(); });
 
   yearsSlider.addEventListener('input', () => {
     if(playing) stopPlayback();
-    const y = Math.round(sliderToYears(Number(yearsSlider.value)));
-    yearsInput.value = y.toLocaleString('ja-JP');
-    render(y);
+    state.focusId = null;
+    setYears(sliderToYears(Number(yearsSlider.value)), { view:'fit', fromSlider:true });
+  });
+  yearsSlider.addEventListener('change', syncURL);
+
+  viewTabs.querySelectorAll('.view-tab').forEach(b => {
+    b.addEventListener('click', () => { setView(b.dataset.view); syncURL(); });
   });
 
-  yearsInput.addEventListener('input', () => {
-    if(playing) stopPlayback();
-  });
-
-  // ---------- 再生アニメーション ----------
-  // 地球誕生（46億年前）から今日まで、針が一定速度でホイールを一周する
-  const playBtn = document.getElementById('playBtn');
-  const speedSelect = document.getElementById('speedSelect');
-  const FULL_SWEEP_MS = 20000; // 1倍速でひと巡りするのにかける時間
+  // ================= 再生 =================
+  // 1倍速での所要時間。大晦日と最後の1分は自動で拡大し、ゆっくり進める
+  const SEGMENTS = [
+    { view:'year',    start: VIEWS.year.start,    end: VIEWS.dec31.start,   ms: 36000 },
+    { view:'dec31',   start: VIEWS.dec31.start,   end: VIEWS.lastmin.start, ms: 16000 },
+    { view:'lastmin', start: VIEWS.lastmin.start, end: 365,                 ms: 16000 },
+  ];
+  const ZOOM_PAUSE_MS = 900; // 拡大した直後に一呼吸おく時間
+  const SORTED_EVENTS = PLACEABLE.map(ev => ({ ev, a: aOf(ev.yearsAgo) })).sort((p, q) => p.a - q.a);
   let playing = false;
   let rafId = null;
   let lastFrameTime = null;
-  let currentYearsAgo = EARTH_AGE;
-  let lastPlaybackDay = null;
+  let currentA = 0;
+  let holdMs = 0;
+  let passIdx = 0;
+  let shownEv = null;
 
-  // 再生中、針がその日に到達したタイミングで詳細パネルをホバー時と同じ内容に切り替える
-  function updatePanelDuringPlayback(yearsAgo){
-    const dayOfYear = computeDate(yearsAgo).dayOfYear;
-    if(dayOfYear === lastPlaybackDay) return;
-    lastPlaybackDay = dayOfYear;
-    const group = groupsByDay.get(dayOfYear);
-    if(group) renderPanel(group);
+  function segmentFor(a){
+    return SEGMENTS.find(seg => a < seg.end) || SEGMENTS[SEGMENTS.length - 1];
+  }
+  function yearsFromA(a){ return Math.max(0, EARTH_AGE * (1 - a / 365)); }
+
+  function setPlayLabel(key){
+    playLabelKey = key;
+    playBtn.textContent = t(key);
   }
 
-  function stopPlayback(label){
+  function stopPlayback(labelKey){
     playing = false;
     if(rafId) cancelAnimationFrame(rafId);
     rafId = null;
     lastFrameTime = null;
-    playBtn.textContent = label || '▶ 再生';
+    setPlayLabel(labelKey || 'play');
     playBtn.setAttribute('aria-pressed', 'false');
+  }
+
+  // 針が出来事を通過したら、その出来事のまとまりをパネルに出す
+  function updatePanelDuringPlayback(){
+    const a = currentA;
+    let passed = null;
+    while(passIdx < SORTED_EVENTS.length && SORTED_EVENTS[passIdx].a <= a + 1e-12){
+      passed = SORTED_EVENTS[passIdx].ev;
+      passIdx++;
+    }
+    if(passed && passed !== shownEv){
+      shownEv = passed;
+      const g = groupContaining(state.view, passed) || groupContaining('year', passed);
+      if(g) renderPanel(g.items, passed, { syncReadout:false });
+    }
   }
 
   function playbackStep(now){
     if(!playing) return;
     if(lastFrameTime === null) lastFrameTime = now;
-    const dt = now - lastFrameTime;
+    const rawDt = now - lastFrameTime;
     lastFrameTime = now;
 
-    const speed = Number(speedSelect.value);
-    const yearsPerMs = EARTH_AGE / FULL_SWEEP_MS;
-    currentYearsAgo -= yearsPerMs * dt * speed;
-
-    if(currentYearsAgo <= 0){
-      currentYearsAgo = 0;
-      setYears(0);
-      updatePanelDuringPlayback(0);
-      stopPlayback('↻ もう一度再生');
+    // 拡大直後の一呼吸（速度に関係なく実時間で待つ）
+    if(holdMs > 0){
+      holdMs -= rawDt;
+      rafId = requestAnimationFrame(playbackStep);
       return;
     }
+    let dt = rawDt * Number(speedSelect.value);
 
-    setYears(currentYearsAgo);
-    updatePanelDuringPlayback(currentYearsAgo);
+    // 区間ごとに速さを変えて進める（区間をまたぐ場合も正しく配分）
+    while(dt > 0 && currentA < 365){
+      const seg = segmentFor(currentA);
+      const rate = (seg.end - seg.start) / seg.ms;
+      const room = (seg.end - currentA) / rate;
+      if(dt < room){ currentA += rate * dt; dt = 0; }
+      else { currentA = seg.end; dt -= room; break; } // 区間の境目で止めて、次のフレームで拡大
+    }
+    if(currentA > 365) currentA = 365;
+
+    const seg = segmentFor(currentA);
+    if(currentA < 365 && seg.view !== state.view){
+      setView(seg.view);
+      holdMs = ZOOM_PAUSE_MS;
+    }
+
+    if(currentA >= 365){
+      setYears(0);
+      updatePanelDuringPlayback();
+      stopPlayback('replay');
+      syncURL();
+      return;
+    }
+    setYears(Math.floor(yearsFromA(currentA)));
+    updatePanelDuringPlayback();
     rafId = requestAnimationFrame(playbackStep);
   }
 
   playBtn.addEventListener('click', () => {
     if(playing){
       stopPlayback();
+      syncURL();
       return;
     }
-    // 今日の位置（再生し終わった状態）にいるときは、最初から再生し直す
     const parsed = parseInput();
-    currentYearsAgo = (parsed === null || parsed <= 0) ? EARTH_AGE : parsed;
+    const fresh = state.excludedId || parsed === null || parsed <= 0;
+    currentA = fresh ? 0 : aOf(Math.min(EARTH_AGE, parsed));
+    passIdx = fresh ? 0 : SORTED_EVENTS.findIndex(p => p.a > currentA);
+    if(passIdx < 0) passIdx = SORTED_EVENTS.length;
+    shownEv = null;
+    holdMs = 0;
+    state.focusId = null;
+    state.excludedId = null;
+    setView(segmentFor(currentA).view);
     playing = true;
     lastFrameTime = null;
-    lastPlaybackDay = null;
-    playBtn.textContent = '⏸ 一時停止';
+    setPlayLabel('pause');
     playBtn.setAttribute('aria-pressed', 'true');
     rafId = requestAnimationFrame(playbackStep);
   });
 
-  document.getElementById('convertBtn').addEventListener('click', () => {
+  // ================= リセット =================
+  // ================= 今日の日付 =================
+  // 実際の今日の日付と時刻を、このカレンダー上の位置として表示する
+  document.getElementById('todayBtn').addEventListener('click', () => {
     if(playing) stopPlayback();
-  }, true);
+    const now = new Date();
+    let month = now.getMonth() + 1;
+    let day = now.getDate();
+    if(month === 2 && day === 29) day = 28; // うるう日は2月28日として扱う
+    const dayOfYear = (month > 1 ? MONTH_END_DAY[month - 2] : 0) + day;
+    const secs = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+    const a = Math.min(365, (dayOfYear - 1) + secs / 86400);
+    const years = Math.floor(EARTH_AGE * (1 - a / 365));
 
-  // 初期表示：今日
-  render(0);
+    state.focusId = null;
+    state.excludedId = null;
+    setView('year');
+    setYears(years);
+    copyStatus.replaceChildren();
+
+    const dateInfo = { month, day };
+    const sameDay = PLACEABLE.filter(ev => computeDate(ev.yearsAgo).dayOfYear === dayOfYear);
+    if(sameDay.length){
+      renderPanel(sameDay, null, { syncReadout:false, heading: () => t('todayOnDay')(t('date')(month, day)) });
+    } else {
+      const byA = SORTED_EVENTS.map(p => p.ev);
+      const prev = [...byA].reverse().find(ev => computeDate(ev.yearsAgo).dayOfYear < dayOfYear);
+      const next = byA.find(ev => computeDate(ev.yearsAgo).dayOfYear > dayOfYear);
+      if(prev && next) renderPanelBetween(prev, next, dateInfo);
+    }
+    syncURL();
+  });
+
+  resetBtn.addEventListener('click', () => {
+    if(playing) stopPlayback();
+    setPlayLabel('play');
+    state.focusId = null;
+    state.excludedId = null;
+    setView('year');
+    setYears(0);
+    renderPanelPlaceholder();
+    copyStatus.replaceChildren();
+    syncURL();
+  });
+
+  // ================= 共有URL =================
+  function buildQuery(){
+    const p = new URLSearchParams();
+    p.set('lang', state.lang);
+    if(state.focusId) p.set('e', state.focusId);
+    else if(state.years > 0) p.set('y', String(state.years));
+    if(state.view !== 'year') p.set('view', state.view);
+    return '?' + p.toString();
+  }
+
+  function syncURL(){
+    if(playing) return;
+    try{ history.replaceState(null, '', buildQuery()); }catch(e){ /* プレビュー環境などでは無視 */ }
+  }
+
+  function shareURL(){
+    try{
+      const u = new URL(location.href);
+      u.search = buildQuery();
+      u.hash = '';
+      return u.href;
+    }catch(e){
+      return buildQuery();
+    }
+  }
+
+  let copyTimer = null;
+  function showCopied(){
+    copyStatus.textContent = t('copied');
+    clearTimeout(copyTimer);
+    copyTimer = setTimeout(() => { copyStatus.replaceChildren(); }, 2500);
+  }
+  function showManualCopy(url){
+    clearTimeout(copyTimer);
+    copyStatus.replaceChildren();
+    const msg = document.createElement('span');
+    msg.textContent = t('copyManual');
+    const input = document.createElement('input');
+    input.className = 'copy-url';
+    input.readOnly = true;
+    input.value = url;
+    copyStatus.append(msg, input);
+    input.focus();
+    input.select();
+  }
+
+  copyBtn.addEventListener('click', async () => {
+    syncURL();
+    const url = shareURL();
+    try{
+      await navigator.clipboard.writeText(url);
+      showCopied();
+    }catch(e){
+      showManualCopy(url);
+    }
+  });
+
+  // ================= 言語切り替え =================
+  function applyLanguage(){
+    const L = T[state.lang];
+    document.documentElement.lang = state.lang;
+    document.title = L.docTitle;
+    document.querySelectorAll('[data-i18n]').forEach(n => { n.textContent = L[n.dataset.i18n]; });
+    yearsInput.placeholder = L.placeholder;
+    yearsSlider.setAttribute('aria-label', L.sliderAria);
+    svg.setAttribute('aria-label', L.wheelAria);
+    viewTabs.setAttribute('aria-label', L.viewTabsAria);
+    viewTabs.querySelectorAll('.view-tab').forEach(b => { b.textContent = L.tabs[b.dataset.view]; });
+    [...speedSelect.options].forEach((o, i) => { o.textContent = L.speeds[i]; });
+    langBtn.textContent = L.langToggle;
+    langBtn.setAttribute('aria-label', L.langToggleAria);
+    langBtn.lang = state.lang === 'ja' ? 'en' : 'ja';
+    setPlayLabel(playLabelKey);
+    copyStatus.replaceChildren();
+
+    buildLists();
+    setView(state.view, { force:true });
+    rerenderPanel();
+    if(display.type === 'years') render(display.years);
+    else renderExcluded(display.years);
+    if(!state.excludedId) yearsInput.value = state.years.toLocaleString(L.locale);
+  }
+
+  langBtn.addEventListener('click', () => {
+    state.lang = state.lang === 'ja' ? 'en' : 'ja';
+    applyLanguage();
+    syncURL();
+  });
+
+  // ================= 初期化 =================
+  (function init(){
+    let params;
+    try{ params = new URLSearchParams(location.search); }catch(e){ params = new URLSearchParams(); }
+
+    const lp = params.get('lang');
+    const browserLang = (navigator.language || 'ja').toLowerCase();
+    state.lang = (lp === 'ja' || lp === 'en') ? lp : (browserLang.startsWith('ja') ? 'ja' : 'en');
+
+    applyLanguage();
+    render(0);
+    renderPanelPlaceholder();
+
+    const e = params.get('e');
+    const y = params.get('y');
+    const v = params.get('view');
+
+    if(e && EVENT_BY_ID.has(e)){
+      selectEvent(EVENT_BY_ID.get(e), { view: v, commit:false });
+    } else if(y !== null && y !== '' && Number.isFinite(Number(y)) && Number(y) >= 0){
+      const years = Math.round(clampYears(Number(y)));
+      const a = aOf(years);
+      setView((VIEWS[v] && inView(v, a)) ? v : 'year');
+      setYears(years);
+    } else if(VIEWS[v]){
+      setView(v);
+    }
+  })();
 
 })();
 </script>
