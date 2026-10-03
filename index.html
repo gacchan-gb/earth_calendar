@@ -674,6 +674,7 @@
       },
       wheelAria: '1年に圧縮した地球の歴史カレンダー',
       panelPlaceholder: '円周上の点にカーソルを合わせると、ここに出来事が表示される。',
+      panelWaiting: '針が出来事を通ると、ここに表示される。',
       wheelNote: '点にカーソルを合わせる（スマホはタップ）と、円の中の暦と下の説明が切り替わる。二重丸の点は出来事が重なっている時間帯で、クリックするとその部分を拡大できる。',
       excludedPanel: label => `「${label}」は地球が誕生するよりも前の出来事なので、このカレンダーには対応する位置がない。`,
       excludedCaption: '換算できません',
@@ -732,6 +733,7 @@
       },
       wheelAria: 'Earth’s history compressed into one calendar year',
       panelPlaceholder: 'Hover over a dot on the circle to see what happened there.',
+      panelWaiting: 'Events appear here as the needle passes them.',
       wheelNote: 'Hover over a dot (or tap it on a phone) to update the calendar and the details below. Double-ringed dots mark crowded moments. Click one to zoom in.',
       excludedPanel: label => `${label} happened before Earth formed, so it has no place on this calendar.`,
       excludedCaption: 'Out of range',
@@ -908,7 +910,13 @@
   });
   svg.appendChild(progressRing);
   // 現在位置マーカー（出来事の点より下に描き、二重丸が隠れないようにする。クリックは透過）
-  const markerLine = el('line', { class:'position-marker', x1:CX, y1:CY, x2:CX, y2:CY, stroke:'var(--amber)', 'stroke-width':2, opacity:0.55 });
+  const needleGrad = el('linearGradient', { id:'needleGrad', gradientUnits:'userSpaceOnUse', x1:CX, y1:CY, x2:CX, y2:CY-R });
+  needleGrad.appendChild(el('stop', { offset:'0.52', style:'stop-color:var(--amber);stop-opacity:0' }));
+  needleGrad.appendChild(el('stop', { offset:'0.8',  style:'stop-color:var(--amber);stop-opacity:0.6' }));
+  const defs = el('defs', {});
+  defs.appendChild(needleGrad);
+  svg.appendChild(defs);
+  const markerLine = el('line', { class:'position-marker', x1:CX, y1:CY, x2:CX, y2:CY, stroke:'url(#needleGrad)', 'stroke-width':2 });
   const markerGlow = el('circle', { class:'position-marker', cx:CX, cy:CY-R, r:12, fill:'var(--amber)', opacity:0.25 });
   const markerDot = el('circle', { class:'position-marker', cx:CX, cy:CY-R, r:6.5, fill:'var(--amber)' });
   svg.appendChild(markerLine);
@@ -1022,9 +1030,10 @@
     const angle = visible ? angleIn(state.view, a) : 0;
     const p = polar(angle, R);
     markerLine.setAttribute('x2', p.x); markerLine.setAttribute('y2', p.y);
+    needleGrad.setAttribute('x2', p.x); needleGrad.setAttribute('y2', p.y);
     markerDot.setAttribute('cx', p.x);  markerDot.setAttribute('cy', p.y);
     markerGlow.setAttribute('cx', p.x); markerGlow.setAttribute('cy', p.y);
-    markerLine.style.opacity = visible ? 0.55 : 0;
+    markerLine.style.opacity = visible ? 1 : 0;
     markerDot.style.opacity = visible ? 1 : 0;
     markerGlow.style.opacity = visible ? 0.25 : 0;
     const arc = angle / 360 * circumference;
@@ -1161,6 +1170,11 @@
     panel.scrollTop = 0;
   }
 
+  function renderPanelWaiting(){
+    panelState = { type:'waiting' };
+    renderPanelMessage(t('panelWaiting'));
+  }
+
   function renderPanelPlaceholder(){
     panelState = { type:'placeholder' };
     renderPanelMessage(t('panelPlaceholder'));
@@ -1173,9 +1187,16 @@
       renderPanelBetween(EVENT_BY_ID.get(panelState.prevId), EVENT_BY_ID.get(panelState.nextId), panelState.dateInfo);
     } else if(panelState.type === 'excluded'){
       renderPanelExcluded(EVENT_BY_ID.get(panelState.id));
+    } else if(panelState.type === 'waiting'){
+      renderPanelWaiting();
     } else {
       renderPanelPlaceholder();
     }
+  }
+
+  function scrollToTop(){
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top:0, behavior: reduce ? 'auto' : 'smooth' });
   }
 
   // ================= 出来事を選ぶ =================
@@ -1215,7 +1236,7 @@
         l.className = 'event-label';
         l.textContent = labelOf(ev);
         btn.append(y, l);
-        btn.addEventListener('click', () => selectEvent(ev));
+        btn.addEventListener('click', () => { selectEvent(ev); scrollToTop(); });
         li.appendChild(btn);
         container.appendChild(li);
       });
@@ -1300,7 +1321,7 @@
     }
     if(passed && passed !== shownEv){
       shownEv = passed;
-      const g = groupContaining(state.view, passed) || groupContaining('year', passed);
+      const g = groupContaining(state.view, passed);
       if(g) renderPanel(g.items, passed, { syncReadout:false });
     }
   }
@@ -1333,6 +1354,11 @@
     if(currentA < 365 && seg.view !== state.view){
       setView(seg.view);
       holdMs = ZOOM_PAUSE_MS;
+      // 前の表示範囲の出来事をパネルに残さない
+      if(shownEv && !inView(seg.view, aOf(shownEv.yearsAgo))){
+        shownEv = null;
+        renderPanelWaiting();
+      }
     }
 
     if(currentA >= 365){
@@ -1537,4 +1563,3 @@
 </script>
 </body>
 </html>
-
