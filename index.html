@@ -1110,10 +1110,19 @@
     l.className = 'panel-label';
     l.textContent = labelOf(ev);
     row.append(y, l);
-    row.addEventListener('mouseenter', () => { if(!playing) render(ev.yearsAgo); });
-    row.addEventListener('focus', () => { if(!playing) render(ev.yearsAgo); });
-    row.addEventListener('click', () => { if(!playing) render(ev.yearsAgo); });
+    row.addEventListener('mouseenter', () => previewEvent(ev));
+    row.addEventListener('focus', () => previewEvent(ev));
+    row.addEventListener('click', () => previewEvent(ev));
     return row;
+  }
+
+  // パネルの行に触れたとき、円の中の表示をその出来事に切り替える。
+  // 今の表示範囲に収まらない出来事なら、収まる範囲（12月31日／1年）に自動で切り替える
+  function previewEvent(ev){
+    if(playing) return;
+    const a = aOf(ev.yearsAgo);
+    if(!inView(state.view, a)) setView(finestView(a));
+    render(ev.yearsAgo);
   }
 
   function renderPanel(items, focusEv, { syncReadout = true, heading = null } = {}){
